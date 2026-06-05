@@ -41,7 +41,9 @@ android {
     if (rootProject.file("keystore.jks").exists()) {
         buildTypes.release.signingConfig = signingConfigs.release
     }
-    buildTypes.debug.signingConfig = signingConfigs.debug
+    if (rootProject.file("debug.keystore").exists()) {
+        buildTypes.debug.signingConfig = signingConfigs.debug
+    }
 
     flavorDimensions "default"
     productFlavors {
