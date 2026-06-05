@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="FilePickerTheme" parent="Theme.AppCompat">
-        <item name="nnf_separator_color">@color/primary</item>
+        <item name="nnf_separator_color">@color/nnf_dark_separator_color</item>
 
         <!-- Set these to match your theme -->
         <item name="colorPrimary">@color/primary</item>
@@ -10,8 +10,9 @@
 
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerTheme.AlertDialog</item>
-        <item name="android:textColorPrimary">@android:color/background_light</item>
-        <item name="android:textColorLink">@android:color/background_light</item>
+        <item name="android:textColorPrimary">@color/tint_normal</item>
+        <item name="android:textColorLink">@color/primary</item>
+        <item name="android:windowBackground">#000000</item>
     </style>
 
     <style name="FilePickerThemeSpecial" parent="FilePickerTheme">
@@ -22,32 +23,44 @@
     <style name="FilePickerTheme.AlertDialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:windowBackground">#000000</item>
     </style>
 
     <!-- theme for player UI -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
         <item name="android:windowBackground">#000000</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/tint_normal</item>
     </style>
 
     <!-- theme for preferences -->
     <style name="AppTheme.Preference" parent="Theme.Material3.DayNight">
         <item name="toolbarStyle">@style/AppTheme.Toolbar.Style</item>
         <item name="alertDialogTheme">@style/AppTheme.Preference.AlertDialog</item>
+        <item name="android:windowBackground">#000000</item>
+        <item name="android:colorBackground">#000000</item>
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColorPrimary">@color/tint_normal</item>
     </style>
 
     <style name="AppTheme.Toolbar.Style" parent="Widget.Material3.Toolbar">
-        <item name="android:background">?colorSurface</item>
+        <item name="android:background">#000000</item>
     </style>
 
     <style name="AppTheme.Preference.AlertDialog" parent="ThemeOverlay.Material3.MaterialAlertDialog">
         <item name="dialogCornerRadius">28dp</item>
         <item name="cornerFamily">rounded</item>
-        <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="android:colorBackground">#000000</item>
     </style>
 
 

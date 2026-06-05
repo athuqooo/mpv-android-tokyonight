@@ -718,8 +718,11 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                 binding.statsTextView.visibility = View.VISIBLE
             }
 
+            // hide system bars when showing controls to prevent status/nav bar from covering UI
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            insetsController.show(WindowInsetsCompat.Type.navigationBars())
+            fadeHandler.postDelayed({
+                insetsController.hide(WindowInsetsCompat.Type.systemBars())
+            }, 100L)
         }
 
         // add a new callback to hide the controls once again

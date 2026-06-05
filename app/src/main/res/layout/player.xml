@@ -27,7 +27,7 @@
             android:layout_marginTop="60dp"
             android:layout_marginRight="24dp"
             android:layout_marginBottom="60dp"
-            android:background="#bf000000"
+            android:background="#d9000000"
             android:orientation="vertical">
 
             <LinearLayout
@@ -221,8 +221,8 @@
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:alpha="0.5"
-            android:background="#bf000000"
+            android:alpha="0.9"
+            android:background="#d9000000"
             android:orientation="horizontal">
 
             <ImageButton

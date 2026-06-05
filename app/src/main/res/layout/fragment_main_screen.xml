@@ -5,7 +5,8 @@
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="24dp"
+    android:background="#000000">
 
     <ImageView
         android:id="@+id/logo"
@@ -31,7 +32,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_file_open_48dp"
             android:text="@string/action_open_doc_tree"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@color/tint_normal" />
 
         <Button
             android:id="@+id/urlBtn"
@@ -41,7 +42,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_link_48dp"
             android:text="@string/action_open_url"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@color/tint_normal" />
 
     </LinearLayout>
 
@@ -60,7 +61,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_folder_white_48dp"
             android:text="@string/file_picker_old"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@color/tint_normal" />
 
         <Button
             android:id="@+id/settingsBtn"
@@ -70,7 +71,7 @@
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_settings_black_48dp"
             android:text="@string/action_settings"
-            android:textColor="@android:color/primary_text_dark" />
+            android:textColor="@color/tint_normal" />
 
     </LinearLayout>
 

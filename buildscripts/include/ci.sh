@@ -76,14 +76,14 @@ else
 fi
 
 msg "Building mpv"
-./buildall.sh -n mpv || {
+./buildall.sh --arch arm64 -n mpv || {
 	# show logfile if configure failed
-	[ ! -f deps/mpv/_build_armv7l/config.h ] && \
-		cat deps/mpv/_build_armv7l/meson-logs/meson-log.txt
+	[ ! -f deps/mpv/_build_arm64/config.h ] && \
+		cat deps/mpv/_build_arm64/meson-logs/meson-log.txt
 	exit 1
 }
 
 msg "Building mpv-android"
-./buildall.sh -n
+./buildall.sh --arch arm64 -n
 
 exit 0
