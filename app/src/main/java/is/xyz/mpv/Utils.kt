@@ -90,10 +90,23 @@ internal object Utils {
         }
     }
 
+    /**
+     * Returns the config directory for mpv.
+     * Prefers external media dir (user-accessible) over internal files dir.
+     */
+    fun getConfigDir(context: Context): String {
+        val external = context.externalMediaDirs.firstOrNull()
+        if (external != null) {
+            external.mkdirs()
+            return external.absolutePath
+        }
+        return context.filesDir.path
+    }
+
     fun copyAssets(context: Context) {
         val assetManager = context.assets
         val files = arrayOf("cacert.pem")
-        val configDir = context.filesDir.path
+        val configDir = getConfigDir(context)
 
         for (name in files) {
             copyAssetFile(assetManager, name, File("$configDir/$name"))

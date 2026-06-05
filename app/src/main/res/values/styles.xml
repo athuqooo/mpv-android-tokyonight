@@ -63,6 +63,12 @@
         <item name="android:colorBackground">#000000</item>
     </style>
 
+    <!-- Main screen buttons (dark surface instead of bright accent) -->
+    <style name="MainScreenButton" parent="Widget.AppCompat.Button">
+        <item name="android:background">@drawable/btn_main_screen_bg</item>
+        <item name="android:textColor">@color/tint_normal</item>
+    </style>
+
 
     <!-- Material3 Switches -->
     <style name="Preference.SwitchPreferenceCompat" parent="Preference.SwitchPreferenceCompat.Material" tools:override="true">

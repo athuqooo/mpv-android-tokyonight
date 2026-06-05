@@ -274,7 +274,8 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             WindowCompat.setDecorFitsSystemWindows(window, false)
             val insetsController = WindowCompat.getInsetsController(window, window.decorView)
             insetsController.systemBarsBehavior =
-                WindowInsetsControllerCompat.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                WindowInsetsControllerCompat.BEHAVIOR_DEFAULT
+            setImmersive()
         }
         if (!packageManager.hasSystemFeature(PackageManager.FEATURE_PICTURE_IN_PICTURE))
             binding.topPiPBtn.visibility = View.GONE
@@ -300,7 +301,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         }
 
         player.addObserver(this)
-        player.initialize(filesDir.path, cacheDir.path)
+        player.initialize(Utils.getConfigDir(this), cacheDir.path)
         player.playFile(filepath)
 
         mediaSession = initMediaSession()
@@ -717,13 +718,10 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                 updateStats()
                 binding.statsTextView.visibility = View.VISIBLE
             }
-
-            // hide system bars when showing controls to prevent status/nav bar from covering UI
-            val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-            fadeHandler.postDelayed({
-                insetsController.hide(WindowInsetsCompat.Type.systemBars())
-            }, 100L)
         }
+
+        // hide system bars when showing controls to prevent status/nav bar from covering UI
+        setImmersive()
 
         // add a new callback to hide the controls once again
         if (!controlsShouldBeVisible())
@@ -740,8 +738,19 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         binding.topControls.visibility = View.GONE
         binding.statsTextView.visibility = View.GONE
 
-        val insetsController = WindowCompat.getInsetsController(window, window.decorView)
-        insetsController.hide(WindowInsetsCompat.Type.systemBars())
+        setImmersive()
+    }
+
+    /** Apply immersive fullscreen mode */
+    private fun setImmersive() {
+        window.decorView.systemUiVisibility = (
+            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+            or View.SYSTEM_UI_FLAG_FULLSCREEN
+            or View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+        )
     }
 
     /** Start fading out the controls */

@@ -26,7 +26,7 @@ class ConfigEditDialogPreference(
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ConfigEditDialog)
         val filename = styledAttrs.getString(R.styleable.ConfigEditDialog_filename)
         dialogMessage = styledAttrs.getString(R.styleable.ConfigEditDialog_dialogMessage)
-        configFile = File("${context.filesDir.path}/${filename}")
+        configFile = File("${Utils.getConfigDir(context)}/${filename}")
 
         styledAttrs.recycle()
     }

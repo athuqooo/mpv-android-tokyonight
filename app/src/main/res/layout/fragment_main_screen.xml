@@ -26,7 +26,7 @@
 
         <Button
             android:id="@+id/docBtn"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/MainScreenButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -36,7 +36,7 @@
 
         <Button
             android:id="@+id/urlBtn"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/MainScreenButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -55,7 +55,7 @@
 
         <Button
             android:id="@+id/filepickerBtn"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/MainScreenButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -65,7 +65,7 @@
 
         <Button
             android:id="@+id/settingsBtn"
-            style="@style/Widget.AppCompat.Button.Colored"
+            style="@style/MainScreenButton"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

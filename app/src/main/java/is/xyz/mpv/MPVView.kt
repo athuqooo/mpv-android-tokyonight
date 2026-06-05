@@ -101,7 +101,7 @@ internal class MPVView(context: Context, attrs: AttributeSet) : BaseMPVView(cont
         MPVLib.setOptionString("ao", "audiotrack,opensles")
         MPVLib.setOptionString("audio-set-media-role", "yes")
         MPVLib.setOptionString("tls-verify", "yes")
-        MPVLib.setOptionString("tls-ca-file", "${this.context.filesDir.path}/cacert.pem")
+        MPVLib.setOptionString("tls-ca-file", "${Utils.getConfigDir(this.context)}/cacert.pem")
         MPVLib.setOptionString("input-default-bindings", "yes")
         // Limit demuxer cache since the defaults are too high for mobile devices
         val cacheMegs = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1) 64 else 32
