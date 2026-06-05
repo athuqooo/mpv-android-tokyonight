@@ -7,6 +7,7 @@ import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.Preference
 import `is`.xyz.mpv.R
+import `is`.xyz.mpv.Utils
 import `is`.xyz.mpv.databinding.ConfEditorBinding
 import java.io.File
 
