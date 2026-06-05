@@ -4,8 +4,8 @@
         <item name="nnf_separator_color">@color/nnf_dark_separator_color</item>
 
         <!-- Set these to match your theme -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimary">#000000</item>
+        <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">@color/accent</item>
 
         <!-- Need to set this also to style create folder dialog -->
@@ -13,6 +13,7 @@
         <item name="android:textColorPrimary">@color/tint_normal</item>
         <item name="android:textColorLink">@color/primary</item>
         <item name="android:windowBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
     </style>
 
     <style name="FilePickerThemeSpecial" parent="FilePickerTheme">
@@ -47,8 +48,9 @@
         <item name="alertDialogTheme">@style/AppTheme.Preference.AlertDialog</item>
         <item name="android:windowBackground">#000000</item>
         <item name="android:colorBackground">#000000</item>
+        <item name="android:statusBarColor">#000000</item>
         <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimaryDark">#000000</item>
         <item name="colorAccent">@color/accent</item>
         <item name="android:textColorPrimary">@color/tint_normal</item>
     </style>
@@ -64,8 +66,7 @@
     </style>
 
     <!-- Main screen buttons (dark surface instead of bright accent) -->
-    <style name="MainScreenButton" parent="Widget.AppCompat.Button">
-        <item name="android:background">@drawable/btn_main_screen_bg</item>
+    <style name="MainScreenButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/tint_normal</item>
     </style>
 
