@@ -15,7 +15,8 @@
 - 控件背景: 深黑半透明 (`#d9000000`)
 
 ### 构建
-- GitHub Actions 仅在 push 到 master 分支时触发构建
+- GitHub Actions 仅在 push 到 master 分支时触发构建（仅 arm64-v8a）
+- 自动合并上游 [mpv-android](https://github.com/mpv-android/mpv-android) 最新代码
 
 ## 下载
 

@@ -10,6 +10,29 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Merge upstream
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git remote add upstream https://github.com/mpv-android/mpv-android.git
+          git fetch upstream master
+          # Check if upstream has new commits not in our branch
+          if git merge-base --is-ancestor upstream/master HEAD; then
+            echo "Already up-to-date with upstream, nothing to merge"
+          else
+            if git merge upstream/master -m "Merge upstream mpv-android/master [skip ci]" --no-ff --no-edit; then
+              git push origin master
+              echo "Merged upstream successfully"
+            else
+              echo "Merge conflict, aborting"
+              git merge --abort
+            fi
+          fi
+
       - uses: actions/setup-java@v5
         with:
           java-version: '17'
