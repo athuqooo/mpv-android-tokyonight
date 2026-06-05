@@ -31,10 +31,17 @@ android {
             keyAlias System.getenv("KEY_ALIAS") ?: "mpv"
             keyPassword System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
         }
+        debug {
+            storeFile rootProject.file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
     }
     if (rootProject.file("keystore.jks").exists()) {
         buildTypes.release.signingConfig = signingConfigs.release
     }
+    buildTypes.debug.signingConfig = signingConfigs.debug
 
     flavorDimensions "default"
     productFlavors {

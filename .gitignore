@@ -12,3 +12,4 @@ local.properties
 keystore.jks
 keystore.properties
 *~
+# debug.keystore is intentionally committed for consistent CI signing

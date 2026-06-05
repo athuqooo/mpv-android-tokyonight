@@ -60,25 +60,55 @@ jobs:
           CACHE_MODE: "folder"
           CACHE_FOLDER: "${{ github.workspace }}/gh-cache"
 
-      - name: Decode keystore
+      # Restore cached release keystore (persists across runs for cover install)
+      - uses: actions/cache/restore@v5
+        id: keystore-cache
+        with:
+          path: keystore.jks
+          key: release-keystore-v1
+
+      - name: Prepare keystore
+        id: keystore
         env:
           KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
           if [ -n "$KEYSTORE_BASE64" ]; then
             echo "$KEYSTORE_BASE64" | base64 -d > keystore.jks
-            echo "Keystore decoded"
+            echo "from_secret=true" >> $GITHUB_OUTPUT
+            echo "Keystore decoded from secret"
+          elif [ ! -f keystore.jks ]; then
+            keytool -genkey -v -keystore keystore.jks \
+              -alias mpv -keyalg RSA -keysize 2048 -validity 10000 \
+              -storepass android -keypass android \
+              -dname "CN=mpv-android-tokyonight,O=CI,C=US"
+            echo "from_secret=false" >> $GITHUB_OUTPUT
+            echo "Generated new release keystore"
+          else
+            echo "from_secret=false" >> $GITHUB_OUTPUT
+            echo "Using cached release keystore"
           fi
+          echo "KEYSTORE_PASSWORD=android" >> $GITHUB_ENV
+          echo "KEY_ALIAS=mpv" >> $GITHUB_ENV
+          echo "KEY_PASSWORD=android" >> $GITHUB_ENV
+
+      # Save auto-generated keystore for next run
+      - if: steps.keystore-cache.outputs.cache-hit != 'true' && steps.keystore.outputs.from_secret != 'true'
+        uses: actions/cache/save@v5
+        with:
+          path: keystore.jks
+          key: release-keystore-v1
 
       - name: Build
         run: buildscripts/include/ci.sh build
         env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+          KEYSTORE_PASSWORD: android
+          KEY_ALIAS: mpv
+          KEY_PASSWORD: android
 
       - uses: actions/upload-artifact@v7
         with:
           name: mpv-android
           path: |
+            app/build/outputs/apk/default/debug/app-default-arm64-v8a-debug.apk
             app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
             app/build/outputs/apk/default/release/app-default-arm64-v8a-release-unsigned.apk
