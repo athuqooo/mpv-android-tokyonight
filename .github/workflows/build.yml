@@ -20,7 +20,6 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/mpv-android/mpv-android.git
           git fetch upstream master
-          # Check if upstream has new commits not in our branch
           if git merge-base --is-ancestor upstream/master HEAD; then
             echo "Already up-to-date with upstream, nothing to merge"
           else
@@ -61,11 +60,25 @@ jobs:
           CACHE_MODE: "folder"
           CACHE_FOLDER: "${{ github.workspace }}/gh-cache"
 
-      - name: Build
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
         run: |
-          buildscripts/include/ci.sh build
+          if [ -n "$KEYSTORE_BASE64" ]; then
+            echo "$KEYSTORE_BASE64" | base64 -d > keystore.jks
+            echo "Keystore decoded"
+          fi
+
+      - name: Build
+        run: buildscripts/include/ci.sh build
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
 
       - uses: actions/upload-artifact@v7
         with:
           name: mpv-android
-          path: app/build/outputs/apk/default/debug/app-default-arm64-v8a-debug.apk
+          path: |
+            app/build/outputs/apk/default/release/app-default-arm64-v8a-release.apk
+            app/build/outputs/apk/default/release/app-default-arm64-v8a-release-unsigned.apk

@@ -9,4 +9,6 @@ obj
 **/*.iml
 build/
 local.properties
+keystore.jks
+keystore.properties
 *~

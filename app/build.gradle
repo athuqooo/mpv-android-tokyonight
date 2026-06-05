@@ -17,6 +17,25 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
+    buildTypes {
+        release {
+            minifyEnabled false
+        }
+    }
+
+    // Signing: uses keystore.jks if present
+    signingConfigs {
+        release {
+            storeFile rootProject.file("keystore.jks")
+            storePassword System.getenv("KEYSTORE_PASSWORD") ?: ""
+            keyAlias System.getenv("KEY_ALIAS") ?: "mpv"
+            keyPassword System.getenv("KEY_PASSWORD") ?: System.getenv("KEYSTORE_PASSWORD") ?: ""
+        }
+    }
+    if (rootProject.file("keystore.jks").exists()) {
+        buildTypes.release.signingConfig = signingConfigs.release
+    }
+
     flavorDimensions "default"
     productFlavors {
         "default" {
