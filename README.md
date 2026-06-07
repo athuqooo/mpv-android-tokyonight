@@ -69,5 +69,5 @@ dscale-antiring=0.4
 ## 🙏 致谢 & 声明
 
 - 基于 [mpv-android](https://github.com/mpv-android/mpv-android) 官方项目。
-- 使用 [pi-coding-agent](github.com/earendil-works/pi)完成工作。
+- 使用 [pi-coding-agent](https://github.com/earendil-works/pi) 完成工作。
 - 主题灵感来自 Tokyo Night Moon 变体。
