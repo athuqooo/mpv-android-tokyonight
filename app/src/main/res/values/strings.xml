@@ -205,6 +205,15 @@
     <string name="interpolation_switch">Enable interpolation</string>
     <string name="interpolation_video_sync">Video sync</string>
 
+    <!-- Shader Manager -->
+    <string name="shader_manager">Shader Manager</string>
+    <string name="shader_manager_summary">Toggle GLSL shaders on/off. Priority overrides mpv.conf.</string>
+    <string name="shader_no_shaders_found">No shaders found in %s</string>
+    <string name="shader_enabled">Enabled</string>
+    <string name="shader_disabled">Disabled</string>
+    <string name="shader_scanning">Scanning shaders…</string>
+    <string name="shader_count">%d shader(s) available, %d enabled</string>
+
     <!-- File picker -->
     <string name="nnf_name">Name</string>
     <string name="nnf_permission_external_write_denied">Permission to access file system denied</string>

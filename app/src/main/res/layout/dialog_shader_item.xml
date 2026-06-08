@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingVertical="6dp"
+    android:paddingHorizontal="4dp">
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingEnd="12dp">
+
+        <TextView
+            android:id="@+id/shaderNameText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tint_normal"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            tools:text="Anime4K.glsl" />
+
+        <TextView
+            android:id="@+id/shaderPathText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@color/tint_disabled"
+            android:textSize="12sp"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            tools:text="shaders/Anime4K/Anime4K.glsl" />
+
+    </LinearLayout>
+
+    <androidx.appcompat.widget.SwitchCompat
+        android:id="@+id/shaderSwitch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:minWidth="48dp" />
+
+</LinearLayout>

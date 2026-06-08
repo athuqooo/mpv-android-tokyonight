@@ -27,6 +27,11 @@
         app:summary="@string/pref_header_developer_summary"
         app:title="@string/pref_header_developer" />
     <Preference
+        app:fragment="is.xyz.mpv.preferences.PreferenceActivity$ShaderPreference"
+        app:icon="@drawable/ic_filter_alt_24dp"
+        app:summary="@string/shader_manager_summary"
+        app:title="@string/shader_manager" />
+    <Preference
         app:fragment="is.xyz.mpv.preferences.PreferenceActivity$AdvancePreference"
         app:icon="@drawable/round_settings_24"
         app:summary="@string/pref_header_advanced_summary"

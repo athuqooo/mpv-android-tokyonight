@@ -68,6 +68,7 @@
     <!-- Main screen buttons (dark surface instead of bright accent) -->
     <style name="MainScreenButton" parent="Widget.AppCompat.Button.Borderless">
         <item name="android:textColor">@color/tint_normal</item>
+        <item name="android:alpha">0.6</item>
     </style>
 
 
