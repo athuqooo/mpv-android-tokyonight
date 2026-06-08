@@ -15,20 +15,22 @@ mkdir -p _build$ndk_suffix
 cd _build$ndk_suffix
 
 cpu=armv7-a
-[[ "$ndk_triple" == "aarch64"* ]] && cpu=armv8-a
+[[ "$ndk_triple" == "aarch64"* ]] && cpu=armv8.2-a
 [[ "$ndk_triple" == "x86_64"* ]] && cpu=generic
 [[ "$ndk_triple" == "i686"* ]] && cpu="i686 --disable-asm"
 
 cpuflags=
+# armv8.2-a: enable dotprod + fp16 for better SIMD throughput
+[[ "$cpu" == "armv8.2-a" ]] && cpuflags="$cpuflags -march=armv8.2-a+dotprod+fp16"
 [[ "$ndk_triple" == "arm"* ]] && cpuflags="$cpuflags -mfpu=neon -mcpu=cortex-a8"
 
 args=(
 	--target-os=android --enable-cross-compile
 	--cross-prefix=$ndk_triple- --cc=$CC --pkg-config=pkg-config --nm=llvm-nm
 	--arch=${ndk_triple%%-*} --cpu=$cpu
-	--extra-cflags="-I$prefix_dir/include $cpuflags" --extra-ldflags="-L$prefix_dir/lib"
+	--extra-cflags="-O3 -flto -I$prefix_dir/include $cpuflags" --extra-ldflags="-O3 -flto -L$prefix_dir/lib"
 
-	--enable-{jni,mediacodec,mbedtls,libdav1d,libxml2} --disable-vulkan
+	--enable-{jni,mediacodec,mbedtls,libdav1d,libxml2}
 	--disable-static --enable-shared --enable-{gpl,version3}
 
 	# disable unneeded parts

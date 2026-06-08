@@ -97,7 +97,8 @@ setup_prefix () {
 	# also define: release build, static libs and no source downloads at runtime(!!!)
 	cat >"$prefix_dir/crossfile.tmp" <<CROSSFILE
 [built-in options]
-buildtype = 'release'
+optimization = '3'
+debug = false
 default_library = 'static'
 wrap_mode = 'nodownload'
 prefix = '/usr/local'
