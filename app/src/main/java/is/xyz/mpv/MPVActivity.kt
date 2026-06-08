@@ -1567,10 +1567,6 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             false
         })
 
-        buttons.add(MenuItem(R.id.shaderBtn) {
-            openShaderManager(restoreState); false
-        })
-
         if (player.vid == -1)
             hiddenButtons.addAll(arrayOf(R.id.rowVideo1, R.id.rowVideo2, R.id.aspectBtn))
         if (player.aid == -1 || player.vid == -1)
@@ -1580,60 +1576,6 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         /******/
 
         genericMenu(R.layout.dialog_advanced_menu, buttons, hiddenButtons, restoreState)
-    }
-
-    private fun openShaderManager(restoreState: StateRestoreCallback) {
-        val prefs = getDefaultSharedPreferences(applicationContext)
-        val configDir = Utils.getConfigDir(this)
-        val shaders = ShaderManager.scanShaders(configDir)
-
-        with (AlertDialog.Builder(this)) {
-            setTitle(R.string.shader_manager)
-            val inflater = LayoutInflater.from(context)
-            val dialogView = inflater.inflate(R.layout.dialog_shader_list, null)
-            val statusText = dialogView.findViewById<TextView>(R.id.shaderStatusText)
-            val container = dialogView.findViewById<LinearLayout>(R.id.shaderListContainer)
-            val emptyText = dialogView.findViewById<TextView>(R.id.shaderEmptyText)
-
-            if (shaders.isEmpty()) {
-                emptyText.visibility = View.VISIBLE
-                val dirPath = ShaderManager.getShadersDir(configDir).absolutePath
-                emptyText.text = getString(R.string.shader_no_shaders_found, dirPath)
-            } else {
-                statusText.visibility = View.VISIBLE
-                statusText.text = getString(R.string.shader_count, shaders.size,
-                    ShaderManager.getEnabledCount(prefs))
-
-                for (shader in shaders) {
-                    val itemView = inflater.inflate(R.layout.dialog_shader_item, container, false)
-                    val nameText = itemView.findViewById<TextView>(R.id.shaderNameText)
-                    val pathText = itemView.findViewById<TextView>(R.id.shaderPathText)
-                    val switch = itemView.findViewById<androidx.appcompat.widget.SwitchCompat>(R.id.shaderSwitch)
-
-                    nameText.text = shader.name
-                    pathText.text = shader.relativePath
-                    switch.isChecked = ShaderManager.isShaderEnabled(prefs, shader.path)
-
-                    switch.setOnCheckedChangeListener { _, checked ->
-                        ShaderManager.toggleShader(prefs, shader.path, checked)
-                        if (checked) {
-                            ShaderManager.addShader(shader.path)
-                        } else {
-                            ShaderManager.removeShader(shader.path)
-                        }
-                        statusText.text = getString(R.string.shader_count, shaders.size,
-                            ShaderManager.getEnabledCount(prefs))
-                    }
-
-                    container.addView(itemView)
-                }
-            }
-
-            setView(dialogView)
-            setPositiveButton(R.string.dialog_ok, null)
-            setOnDismissListener { restoreState() }
-            create().show()
-        }
     }
 
     private fun cycleOrientation() {
@@ -2067,11 +2009,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                 MPVLib.command(arrayOf("script-binding", "stats/display-page-${this.statsLuaMode}-toggle"))
             }
 
-            // Apply user-managed shaders (takes priority over mpv.conf)
-            val prefs = getDefaultSharedPreferences(applicationContext)
-            ShaderManager.syncManagedShaders(prefs, Utils.getConfigDir(this@MPVActivity))
-
-            playbackHasStarted = true
+            // playbackHasStarted = true
         }
 
         if (!activityIsForeground) return

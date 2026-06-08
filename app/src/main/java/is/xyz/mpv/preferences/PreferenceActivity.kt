@@ -16,7 +16,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import `is`.xyz.mpv.R
-import `is`.xyz.mpv.ShaderManager
 import `is`.xyz.mpv.Utils
 import android.view.LayoutInflater
 import android.view.View
@@ -165,70 +164,6 @@ class PreferenceActivity : AppCompatActivity(),
     class AdvancePreference : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.pref_advanced, rootKey)
-        }
-    }
-
-    class ShaderPreference : PreferenceFragmentCompat() {
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            // We don't use a static XML resource - build UI dynamically
-            setPreferenceScreen(preferenceManager.createPreferenceScreen(requireContext()))
-        }
-
-        override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
-        ): View {
-            val view = inflater.inflate(R.layout.activity_shader_pref, container, false)
-            val statusText = view.findViewById<TextView>(R.id.shaderPrefStatusText)
-            val containerList = view.findViewById<LinearLayout>(R.id.shaderPrefListContainer)
-            val emptyText = view.findViewById<TextView>(R.id.shaderPrefEmptyText)
-
-            val prefs = PreferenceManager.getDefaultSharedPreferences(requireContext())
-            val configDir = Utils.getConfigDir(requireContext())
-            val shaders = ShaderManager.scanShaders(configDir)
-
-            if (shaders.isEmpty()) {
-                emptyText.visibility = View.VISIBLE
-                val dirPath = ShaderManager.getShadersDir(configDir).absolutePath
-                emptyText.text = getString(R.string.shader_no_shaders_found, dirPath)
-            } else {
-                statusText.visibility = View.VISIBLE
-                statusText.text = getString(R.string.shader_count, shaders.size,
-                    ShaderManager.getEnabledCount(prefs))
-
-                for (shader in shaders) {
-                    val itemView = inflater.inflate(
-                        R.layout.dialog_shader_item, containerList, false)
-                    val nameText = itemView.findViewById<TextView>(R.id.shaderNameText)
-                    val pathText = itemView.findViewById<TextView>(R.id.shaderPathText)
-                    val switch = itemView.findViewById<SwitchCompat>(R.id.shaderSwitch)
-
-                    nameText.text = shader.name
-                    pathText.text = shader.relativePath
-                    switch.isChecked = ShaderManager.isShaderEnabled(prefs, shader.path)
-
-                    switch.setOnCheckedChangeListener { _, checked ->
-                        ShaderManager.toggleShader(prefs, shader.path, checked)
-                        if (checked) {
-                            ShaderManager.addShader(shader.path)
-                        } else {
-                            ShaderManager.removeShader(shader.path)
-                        }
-                        statusText.text = getString(R.string.shader_count, shaders.size,
-                            ShaderManager.getEnabledCount(prefs))
-                    }
-
-                    containerList.addView(itemView)
-                }
-            }
-
-            return view
-        }
-
-        override fun onResume() {
-            super.onResume()
-            requireActivity().setTitle(R.string.shader_manager)
         }
     }
 }
