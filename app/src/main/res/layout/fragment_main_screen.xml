@@ -31,6 +31,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_file_open_48dp"
+            android:drawableTint="@color/tint_normal"
             android:text="@string/action_open_doc_tree"
             android:textColor="@color/tint_normal" />
 
@@ -41,6 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_link_48dp"
+            android:drawableTint="@color/tint_normal"
             android:text="@string/action_open_url"
             android:textColor="@color/tint_normal" />
 
@@ -60,6 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_folder_white_48dp"
+            android:drawableTint="@color/tint_normal"
             android:text="@string/file_picker_old"
             android:textColor="@color/tint_normal" />
 
@@ -70,6 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:drawableTop="@drawable/ic_settings_black_48dp"
+            android:drawableTint="@color/tint_normal"
             android:text="@string/action_settings"
             android:textColor="@color/tint_normal" />
 

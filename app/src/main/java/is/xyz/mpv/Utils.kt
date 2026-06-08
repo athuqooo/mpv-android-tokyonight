@@ -95,7 +95,7 @@ internal object Utils {
      * Prefers external media dir (user-accessible) over internal files dir.
      */
     fun getConfigDir(context: Context): String {
-        val external = context.externalMediaDirs.firstOrNull()
+        val external = context.externalMediaDirs.filterNotNull().firstOrNull()
         if (external != null) {
             external.mkdirs()
             return external.absolutePath
