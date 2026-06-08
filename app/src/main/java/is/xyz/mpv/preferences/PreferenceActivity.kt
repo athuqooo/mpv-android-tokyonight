@@ -171,8 +171,7 @@ class PreferenceActivity : AppCompatActivity(),
     class ShaderPreference : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             // We don't use a static XML resource - build UI dynamically
-            preferenceManager.preferenceScreen = preferenceManager.createPreferenceScreen(
-                requireContext())
+            setPreferenceScreen(preferenceManager.createPreferenceScreen(requireContext()))
         }
 
         override fun onCreateView(

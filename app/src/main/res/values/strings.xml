@@ -212,7 +212,7 @@
     <string name="shader_enabled">Enabled</string>
     <string name="shader_disabled">Disabled</string>
     <string name="shader_scanning">Scanning shaders…</string>
-    <string name="shader_count">%d shader(s) available, %d enabled</string>
+    <string name="shader_count">%1$d shader(s) available, %2$d enabled</string>
 
     <!-- File picker -->
     <string name="nnf_name">Name</string>

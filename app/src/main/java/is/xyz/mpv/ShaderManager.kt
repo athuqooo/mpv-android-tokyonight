@@ -20,7 +20,7 @@ object ShaderManager {
     private const val TAG = "mpv-shader"
     private const val PREFS_KEY_ENABLED = "shader_manager_enabled"
     private const val PREFS_KEY_DISABLED = "shader_manager_disabled"
-    private const val SHADER_EXTENSIONS = setOf("glsl", "hook")
+    private val SHADER_EXTENSIONS = setOf("glsl", "hook")
 
     /**
      * Represents a single shader file.
