@@ -2074,7 +2074,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                     player.timePos = newPosExact.toDouble() // (exact seek)
                 } else {
                     // seek faster than assigning to timePos but less precise
-                    MPVLib.command(arrayOf("seek", "$newPosExact", "absolute+keyframes"))
+                    MPVLib.command(arrayOf("seek", "$newPosExact", "absolute"))
                 }
                 // Note: don't call updatePlaybackPos() here because mpv will seek a timestamp
                 // actually present in the file, and not the exact one we specified.
