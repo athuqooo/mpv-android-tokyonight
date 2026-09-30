@@ -21,6 +21,7 @@ import androidx.core.view.WindowCompat
 import androidx.recyclerview.widget.RecyclerView
 import `is`.xyz.filepicker.DocumentPickerFragment
 import `is`.xyz.filepicker.FilePickerFragment
+import `is`.xyz.mpv.preferences.PreferenceActivity
 import java.io.File
 import java.io.FileFilter
 
