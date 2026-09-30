@@ -1,6 +1,13 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <SwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="oled_theme"
+        android:summary="@string/pref_oled_theme_summary"
+        android:title="@string/pref_oled_theme_title"
+        app:iconSpaceReserved="false" />
+
     <ListPreference
         android:defaultValue="@string/pref_auto_rotation_default"
         app:iconSpaceReserved="false"

@@ -23,7 +23,7 @@
         android:focusable="true"
         android:clipToPadding="false"
         android:fitsSystemWindows="true"
-        android:background="@color/neo_black"
+        android:background="?android:colorBackground"
         tools:listitem="@layout/nnf_filepicker_listitem_dir"/>
 
     <FrameLayout

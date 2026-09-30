@@ -177,6 +177,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
     private var controlsAtBottom = true
     private var showMediaTitle = false
     private var useTimeRemaining = false
+    private var bottomSystemInset = 0
 
     private var rememberBrightness = false
     private var lastScreenBrightness = -1
@@ -227,12 +228,17 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             val insets = windowInsets.getInsets(
                 WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
             )
+            bottomSystemInset = insets.bottom
             v.updateLayoutParams<MarginLayoutParams> {
                 // avoid system bars and cutout
                 leftMargin = insets.left
                 topMargin = insets.top
                 bottomMargin = insets.bottom
                 rightMargin = insets.right
+            }
+            binding.controls.updateLayoutParams<MarginLayoutParams> {
+                bottomMargin = if (controlsAtBottom) -bottomSystemInset
+                else Utils.convertDp(this@MPVActivity, 60f)
             }
             WindowInsetsCompat.CONSUMED
         }
@@ -252,10 +258,12 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
     // Activity lifetime
 
     override fun onCreate(icicle: Bundle?) {
+        Utils.applyOledTheme(this, R.style.AppTheme_Oled)
         super.onCreate(icicle)
 
         // Do these here and not in MainActivity because mpv can be launched from a file browser
-        Utils.copyAssets(this)
+        val configDir = Utils.configDir(this)
+        Utils.copyAssets(this, configDir)
         BackgroundPlaybackService.createNotificationChannel(this)
 
         binding = PlayerBinding.inflate(layoutInflater)
@@ -303,7 +311,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         }
 
         player.addObserver(this)
-        player.initialize(filesDir.path, cacheDir.path)
+        player.initialize(configDir.path, cacheDir.path)
         player.playFile(filepath)
 
         mediaSession = initMediaSession()
@@ -1006,7 +1014,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             bottomMargin = if (!controlsAtBottom) {
                 Utils.convertDp(this@MPVActivity, 60f)
             } else {
-                0
+                -bottomSystemInset
             }
             leftMargin = if (!controlsAtBottom) {
                 Utils.convertDp(this@MPVActivity, if (isLandscape) 60f else 24f)
@@ -2030,6 +2038,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
     // Gesture handler
 
     private var initialSeek = 0f
+    private var finalSeekPosition: Double? = null
     private var initialBright = 0f
     private var initialVolume = 0
     private var maxVolume = 0
@@ -2051,6 +2060,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                 mightWantToToggleControls = false
 
                 initialSeek = (psc.position / 1000f)
+                finalSeekPosition = null
                 initialBright = Utils.getScreenBrightness(this) ?: 0.5f
                 with (audioManager!!) {
                     initialVolume = getStreamVolume(STREAM_TYPE)
@@ -2079,6 +2089,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                 }
 
                 val newPosExact = (initialSeek + diff).coerceIn(0f, duration)
+                finalSeekPosition = newPosExact.toDouble()
                 val newPos = newPosExact.roundToInt()
                 val newDiff = (newPosExact - initialSeek).roundToInt()
                 if (smoothSeekGesture) {
@@ -2111,6 +2122,9 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
                 gestureTextView.text = getString(R.string.ui_brightness, newBrightPercent)
             }
             PropertyChange.Finalize -> {
+                if (!smoothSeekGesture)
+                    finalSeekPosition?.let { player.timePos = it }
+                finalSeekPosition = null
                 if (pausedForSeek == 1)
                     player.paused = false
                 gestureTextView.visibility = View.GONE

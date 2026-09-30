@@ -11,6 +11,7 @@ import `is`.xyz.mpv.BuildConfig
 import `is`.xyz.mpv.MPVLib
 import `is`.xyz.mpv.MPVLib.MpvLogLevel
 import `is`.xyz.mpv.R
+import `is`.xyz.mpv.Utils
 import `is`.xyz.mpv.databinding.ActivityAboutBinding
 
 class AboutActivity : AppCompatActivity(), MPVLib.LogObserver {
@@ -19,10 +20,11 @@ class AboutActivity : AppCompatActivity(), MPVLib.LogObserver {
     private var mpvDestroyed = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        Utils.applyOledTheme(this, R.style.AppTheme_Preference_Oled)
         super.onCreate(savedInstanceState)
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        if (preferences.getBoolean("material_you_theming", false))
+        if (preferences.getBoolean("material_you_theming", false) && !Utils.isOledTheme(this))
             DynamicColors.applyToActivityIfAvailable(this)
         enableEdgeToEdge()
         binding = ActivityAboutBinding.inflate(layoutInflater)

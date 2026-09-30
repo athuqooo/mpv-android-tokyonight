@@ -12,6 +12,7 @@ import android.os.Environment
 import android.os.Parcelable
 import android.os.storage.StorageManager
 import android.provider.Settings
+import android.preference.PreferenceManager
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -32,6 +33,14 @@ import kotlin.math.ceil
 import kotlin.math.roundToInt
 
 internal object Utils {
+    fun isOledTheme(context: Context): Boolean =
+        PreferenceManager.getDefaultSharedPreferences(context).getBoolean("oled_theme", false)
+
+    fun applyOledTheme(activity: Activity, themeResId: Int) {
+        if (isOledTheme(activity))
+            activity.setTheme(themeResId)
+    }
+
     private fun copyAssetFile(assetManager: AssetManager, filename: String, outFile: File): Boolean {
         var ins: InputStream? = null
         var out: OutputStream? = null
@@ -90,19 +99,55 @@ internal object Utils {
         }
     }
 
-    fun copyAssets(context: Context) {
+    fun configDir(context: Context): File {
+        val defaultDir = context.externalMediaDirs.firstOrNull()
+            ?: File(context.filesDir, "mpv")
+        val configuredPath = PreferenceManager.getDefaultSharedPreferences(context)
+            .getString("mpv_config_dir", null)
+            ?.trim()
+            ?.takeIf { it.isNotEmpty() }
+        val requestedDir = configuredPath?.let(::File) ?: defaultDir
+        val configDir = try {
+            if ((requestedDir.isDirectory || requestedDir.mkdirs()) && requestedDir.canWrite())
+                requestedDir.canonicalFile
+            else
+                File(context.filesDir, "mpv")
+        } catch (e: IOException) {
+            Log.w(TAG, "Failed to access config directory $requestedDir", e)
+            File(context.filesDir, "mpv")
+        }
+        if (!configDir.exists())
+            configDir.mkdirs()
+
+        val previousDir = context.filesDir
+        if (previousDir.canonicalPath != configDir.canonicalPath) {
+            for (name in arrayOf("mpv.conf", "input.conf", "scripts", "script-opts", "shaders", "watch_later")) {
+                val oldFile = File(previousDir, name)
+                val newFile = File(configDir, name)
+                if (oldFile.exists() && !newFile.exists()) {
+                    try {
+                        oldFile.copyRecursively(newFile, overwrite = false)
+                    } catch (e: IOException) {
+                        Log.w(TAG, "Failed to migrate config item $name", e)
+                    }
+                }
+            }
+        }
+        return configDir
+    }
+
+    fun copyAssets(context: Context, configDir: File) {
         val assetManager = context.assets
         val files = arrayOf("cacert.pem")
-        val configDir = context.filesDir.path
 
         for (name in files) {
-            copyAssetFile(assetManager, name, File("$configDir/$name"))
+            copyAssetFile(assetManager, name, File(configDir, name))
         }
 
         // we used to ship this, but it's no longer needed
-        File("$configDir/subfont.ttf").delete()
+        File(configDir, "subfont.ttf").delete()
 
-        writeFontsConf(context, File("$configDir/fonts.conf"))
+        writeFontsConf(context, File(configDir, "fonts.conf"))
     }
 
     fun findRealPath(fd: Int): String? {

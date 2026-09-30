@@ -8,6 +8,8 @@ An unofficial, community-maintained fork of [mpv-android](https://github.com/mpv
 
 - A Neo OLED interface for the built-in file browser and playback controls, designed without additional image assets.
 - The built-in file manager is the single app-launch entry point. It requests the Android storage permissions it needs and offers settings and URL playback from its menu.
+- mpv configuration defaults to the app's `Android/media/<package>` directory and can be changed in Advanced settings.
+- TokyoNight surfaces are the default; a pure OLED-black theme is available in User interface settings.
 - Native dependencies use `-O2` and ThinLTO where supported by their build systems.
 - GitHub Actions builds only `arm64-v8a` with ARMv8.2-A instructions and runs only when started manually.
 

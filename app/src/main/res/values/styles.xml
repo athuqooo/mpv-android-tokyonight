@@ -9,6 +9,10 @@
         <item name="colorAccent">@color/accent</item>
         <item name="colorControlHighlight">@color/neo_highlight</item>
         <item name="colorControlActivated">@color/neo_accent</item>
+        <item name="android:colorBackground">@color/neo_surface</item>
+        <item name="android:windowBackground">@color/neo_surface</item>
+        <item name="android:statusBarColor">@color/neo_surface</item>
+        <item name="android:navigationBarColor">@color/neo_surface</item>
 
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerTheme.AlertDialog</item>
@@ -28,9 +32,25 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
+    <style name="FilePickerTheme.Oled" parent="FilePickerThemeSpecial">
+        <item name="alertDialogTheme">@style/FilePickerTheme.Oled.AlertDialog</item>
+        <item name="android:colorBackground">@color/neo_black</item>
+        <item name="android:windowBackground">@color/neo_black</item>
+        <item name="android:statusBarColor">@color/neo_black</item>
+        <item name="android:navigationBarColor">@color/neo_black</item>
+    </style>
+
+    <style name="FilePickerTheme.Oled.AlertDialog" parent="FilePickerTheme.AlertDialog">
+        <item name="android:colorBackground">@color/neo_black</item>
+        <item name="android:windowBackground">@color/neo_black</item>
+    </style>
+
     <style name="FilePickerTheme.AlertDialog" parent="Theme.AppCompat.Dialog.Alert">
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="android:colorBackground">@color/neo_surface</item>
+        <item name="android:windowBackground">@color/neo_surface</item>
+        <item name="android:textColorPrimary">@color/neo_text</item>
     </style>
 
     <!-- theme for player UI -->
@@ -40,18 +60,71 @@
         <item name="colorAccent">@color/neo_accent</item>
         <item name="colorControlHighlight">@color/neo_highlight</item>
         <item name="colorControlActivated">@color/neo_accent</item>
+        <item name="android:colorBackground">@color/neo_surface</item>
+        <item name="android:textColorPrimary">@color/neo_text</item>
+        <item name="android:textColorSecondary">@color/neo_muted</item>
+        <item name="alertDialogTheme">@style/AppTheme.AlertDialog</item>
+        <item name="popupMenuStyle">@style/AppTheme.PopupMenu</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
+        <item name="android:windowBackground">@color/neo_surface</item>
+    </style>
+
+    <style name="AppTheme.Oled" parent="AppTheme">
+        <item name="alertDialogTheme">@style/AppTheme.Oled.AlertDialog</item>
+        <item name="popupMenuStyle">@style/AppTheme.Oled.PopupMenu</item>
+        <item name="android:colorBackground">@color/neo_black</item>
         <item name="android:windowBackground">@color/neo_black</item>
+    </style>
+
+    <style name="AppTheme.Oled.AlertDialog" parent="AppTheme.AlertDialog">
+        <item name="android:colorBackground">@color/neo_black</item>
+        <item name="android:windowBackground">@color/neo_black</item>
+    </style>
+
+    <style name="AppTheme.AlertDialog" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:colorBackground">@color/neo_surface</item>
+        <item name="android:textColorPrimary">@color/neo_text</item>
+        <item name="android:textColorSecondary">@color/neo_muted</item>
+        <item name="colorAccent">@color/neo_accent</item>
+    </style>
+
+    <style name="AppTheme.PopupMenu" parent="Widget.AppCompat.PopupMenu">
+        <item name="android:popupBackground">@color/neo_surface</item>
+    </style>
+
+    <style name="AppTheme.Oled.PopupMenu" parent="AppTheme.PopupMenu">
+        <item name="android:popupBackground">@color/neo_black</item>
     </style>
 
     <!-- theme for preferences -->
     <style name="AppTheme.Preference" parent="Theme.Material3.DayNight">
         <item name="toolbarStyle">@style/AppTheme.Toolbar.Style</item>
         <item name="alertDialogTheme">@style/AppTheme.Preference.AlertDialog</item>
+        <item name="colorPrimary">@color/neo_accent</item>
+        <item name="colorOnPrimary">@color/neo_black</item>
+        <item name="colorOnSurface">@color/neo_text</item>
+        <item name="colorOnSurfaceVariant">@color/neo_muted</item>
+        <item name="colorOnBackground">@color/neo_text</item>
+        <item name="colorSecondary">@color/neo_accent</item>
+        <item name="colorSurface">@color/neo_surface</item>
+        <item name="colorSurfaceContainerLowest">@color/neo_surface</item>
+        <item name="colorSurfaceContainerLow">@color/neo_surface_variant</item>
+        <item name="colorSurfaceContainer">@color/neo_surface_variant</item>
+        <item name="android:colorBackground">@color/neo_surface</item>
+        <item name="android:windowBackground">@color/neo_surface</item>
+    </style>
+
+    <style name="AppTheme.Preference.Oled" parent="AppTheme.Preference">
+        <item name="colorSurface">@color/neo_black</item>
+        <item name="colorSurfaceContainerLowest">@color/neo_black</item>
+        <item name="colorSurfaceContainerLow">@color/neo_black</item>
+        <item name="colorSurfaceContainer">@color/neo_black</item>
+        <item name="android:colorBackground">@color/neo_black</item>
+        <item name="android:windowBackground">@color/neo_black</item>
     </style>
 
     <style name="AppTheme.Toolbar.Style" parent="Widget.Material3.Toolbar">
@@ -62,6 +135,7 @@
         <item name="dialogCornerRadius">28dp</item>
         <item name="cornerFamily">rounded</item>
         <item name="android:colorBackground">?attr/colorSurface</item>
+        <item name="colorOnSurface">@color/neo_text</item>
     </style>
 
 

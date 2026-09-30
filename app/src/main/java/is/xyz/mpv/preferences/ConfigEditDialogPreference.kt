@@ -8,6 +8,7 @@ import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.preference.Preference
 import `is`.xyz.mpv.R
+import `is`.xyz.mpv.Utils
 import `is`.xyz.mpv.databinding.ConfEditorBinding
 import java.io.File
 
@@ -15,7 +16,9 @@ class ConfigEditDialogPreference(
     context: Context,
     attrs: AttributeSet? = null
 ) : Preference(context, attrs) {
-    private var configFile: File
+    private var filename = ""
+    private val configFile: File
+        get() = File(Utils.configDir(context), filename)
     private lateinit var binding: ConfEditorBinding
     private lateinit var dialog: AlertDialog
     private var dialogMessage: String?
@@ -25,9 +28,8 @@ class ConfigEditDialogPreference(
 
         // determine where the file to be edited is located
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.ConfigEditDialog)
-        val filename = styledAttrs.getString(R.styleable.ConfigEditDialog_filename)
+        filename = styledAttrs.getString(R.styleable.ConfigEditDialog_filename) ?: ""
         dialogMessage = styledAttrs.getString(R.styleable.ConfigEditDialog_dialogMessage)
-        configFile = File("${context.filesDir.path}/${filename}")
 
         styledAttrs.recycle()
     }

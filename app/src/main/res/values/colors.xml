@@ -6,6 +6,7 @@
 
     <color name="neo_black">#000000</color>
     <color name="neo_surface">#0A0D10</color>
+    <color name="neo_surface_variant">#11181E</color>
     <color name="neo_text">#F1F5F7</color>
     <color name="neo_muted">#8B969E</color>
     <color name="neo_accent">#9EEAF2</color>

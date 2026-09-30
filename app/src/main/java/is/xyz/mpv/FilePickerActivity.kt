@@ -29,10 +29,13 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
     private var fragment: MPVFilePickerFragment? = null
     private var fragment2: MPVDocumentPickerFragment? = null
     private var homeMode = false
+    private var oledThemeApplied = false
 
     private var lastSeenInsets: WindowInsets? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        oledThemeApplied = Utils.isOledTheme(this)
+        Utils.applyOledTheme(this, R.style.FilePickerTheme_Oled)
         super.onCreate(null)
         Log.v(TAG, "FilePickerActivity: created")
         homeMode = intent.getIntExtra("skip", -1) == -1
@@ -72,6 +75,12 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
         initFilePicker()
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (oledThemeApplied != Utils.isOledTheme(this))
+            recreate()
+    }
+
     private fun doUiTweaks() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
@@ -84,7 +93,7 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
     private fun getFilterState(): Boolean {
         with (PreferenceManager.getDefaultSharedPreferences(this)) {
             // naming is a legacy leftover
-            return getBoolean("MainActivity_filter_state", false)
+            return getBoolean("MainActivity_filter_state", true)
         }
     }
 

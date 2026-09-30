@@ -101,6 +101,8 @@
     <string name="pref_display_media_title_summary">如果选中将在控制栏上方显示媒体标题或文件名。音频文件将总是显示标题，艺术家和专辑。</string>
 
     <string name="pref_bottom_controls_title">在屏幕底部显示控制栏</string>
+    <string name="pref_oled_theme_title">OLED 纯黑</string>
+    <string name="pref_oled_theme_summary">在应用界面中使用纯黑背景。</string>
 
 
     <string name="pref_header_ui">用户界面</string>
@@ -160,6 +162,9 @@
     <string name="pref_gpu_next_summary">使用新的视频渲染后端，基于 libplacebo。</string>
     <string name="pref_version_info">版本信息</string>
 
+    <string name="pref_config_dir_title">配置目录</string>
+    <string name="pref_config_dir_summary">选择应用可写的绝对路径，保存 mpv.conf、input.conf 及相关文件。</string>
+    <string name="error_config_dir_not_writable">请选择应用可写的绝对路径。</string>
     <string name="pref_edit_mpv_conf">编辑 mpv.conf</string>
     <string name="pref_edit_mpv_conf_message">您可以在这里直接编辑 mpv 的配置。</string>
 

@@ -136,6 +136,8 @@
     <string name="pref_display_media_title_summary">Display the title or filename of videos above the controls. Audio files will always display their metadata.</string>
 
     <string name="pref_bottom_controls_title">Show controls at bottom of screen</string>
+    <string name="pref_oled_theme_title">OLED black</string>
+    <string name="pref_oled_theme_summary">Use pure black backgrounds throughout the app.</string>
 
     <string name="pref_no_ui_pause_title">Continue playback during UI popups</string>
     <string name="pref_no_ui_pause_summary">Continue playback while popups are open. (e.g. during the playlist dialog)</string>
@@ -197,6 +199,9 @@
 
     <string name="pref_version_info">Version information</string>
 
+    <string name="pref_config_dir_title">Configuration directory</string>
+    <string name="pref_config_dir_summary">Choose an absolute, writable directory for mpv.conf, input.conf and related files.</string>
+    <string name="error_config_dir_not_writable">Choose an absolute path the app can write to.</string>
     <string name="pref_edit_mpv_conf">Edit mpv.conf</string>
     <string name="pref_edit_mpv_conf_message">You can directly edit mpv\'s configuration here.</string>
 

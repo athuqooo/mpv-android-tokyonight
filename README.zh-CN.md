@@ -8,6 +8,8 @@
 
 - 为内置文件管理器和播放控制界面设计 Neo OLED 风格，不依赖额外图片素材。
 - 内置文件管理器作为应用的唯一启动入口；按需请求 Android 存储权限，并从菜单进入设置或播放 URL。
+- mpv 配置默认保存在应用的 `Android/media/<package>` 目录，可在高级设置中修改。
+- 默认使用 TokyoNight 灰黑背景；用户界面设置中可切换为 OLED 纯黑主题。
 - 在各构建系统支持的范围内，为 native 依赖启用 `-O2` 和 ThinLTO。
 - GitHub Actions 仅构建使用 ARMv8.2-A 指令的 `arm64-v8a`，且只在手动启动时运行。
 
