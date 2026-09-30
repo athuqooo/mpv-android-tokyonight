@@ -6,20 +6,17 @@ import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
 import android.widget.FrameLayout
-import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
-import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import `is`.xyz.mpv.R
 import `is`.xyz.mpv.Utils
-import java.io.File
 
 class PreferenceActivity : AppCompatActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
@@ -163,25 +160,6 @@ class PreferenceActivity : AppCompatActivity(),
     class AdvancePreference : PreferenceFragmentCompat() {
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.pref_advanced, rootKey)
-            val configPreference = findPreference<EditTextPreference>("mpv_config_dir")!!
-            if (configPreference.text.isNullOrBlank())
-                configPreference.text = Utils.configDir(requireContext()).path
-            configPreference.summary = Utils.configDir(requireContext()).path
-            configPreference.setOnPreferenceChangeListener { preference, value ->
-                val path = value.toString().trim()
-                val directory = File(path)
-                val usable = try {
-                    directory.isAbsolute &&
-                        (directory.isDirectory || directory.mkdirs()) && directory.canWrite()
-                } catch (_: SecurityException) {
-                    false
-                }
-                if (usable)
-                    preference.summary = directory.canonicalPath
-                else
-                    Toast.makeText(requireContext(), R.string.error_config_dir_not_writable, Toast.LENGTH_SHORT).show()
-                usable
-            }
         }
     }
 }

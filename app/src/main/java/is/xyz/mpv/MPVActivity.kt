@@ -2059,7 +2059,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             PropertyChange.Init -> {
                 mightWantToToggleControls = false
 
-                initialSeek = (psc.position / 1000f)
+                initialSeek = (psc.position / 1000f) + 0.5f
                 finalSeekPosition = null
                 initialBright = Utils.getScreenBrightness(this) ?: 0.5f
                 with (audioManager!!) {

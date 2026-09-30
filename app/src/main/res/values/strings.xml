@@ -199,9 +199,6 @@
 
     <string name="pref_version_info">Version information</string>
 
-    <string name="pref_config_dir_title">Configuration directory</string>
-    <string name="pref_config_dir_summary">Choose an absolute, writable directory for mpv.conf, input.conf and related files.</string>
-    <string name="error_config_dir_not_writable">Choose an absolute path the app can write to.</string>
     <string name="pref_edit_mpv_conf">Edit mpv.conf</string>
     <string name="pref_edit_mpv_conf_message">You can directly edit mpv\'s configuration here.</string>
 

@@ -100,27 +100,20 @@ internal object Utils {
     }
 
     fun configDir(context: Context): File {
-        val defaultDir = context.externalMediaDirs.firstOrNull()
-            ?: File(context.filesDir, "mpv")
-        val configuredPath = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString("mpv_config_dir", null)
-            ?.trim()
-            ?.takeIf { it.isNotEmpty() }
-        val requestedDir = configuredPath?.let(::File) ?: defaultDir
-        val configDir = try {
-            if ((requestedDir.isDirectory || requestedDir.mkdirs()) && requestedDir.canWrite())
-                requestedDir.canonicalFile
-            else
-                File(context.filesDir, "mpv")
-        } catch (e: IOException) {
-            Log.w(TAG, "Failed to access config directory $requestedDir", e)
-            File(context.filesDir, "mpv")
-        }
-        if (!configDir.exists())
-            configDir.mkdirs()
+        val configDir = context.externalMediaDirs.firstOrNull()
+            ?: File(Environment.getExternalStorageDirectory(), "Android/media/${context.packageName}")
+        if (!configDir.exists() && !configDir.mkdirs())
+            Log.e(TAG, "Failed to create config directory $configDir")
 
-        val previousDir = context.filesDir
-        if (previousDir.canonicalPath != configDir.canonicalPath) {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val customPreviousDir = preferences.getString("mpv_config_dir", null)
+            ?.takeIf { it.isNotBlank() }
+            ?.let(::File)
+        val previousDirs = listOfNotNull(context.filesDir, customPreviousDir)
+            .distinctBy { it.absolutePath }
+        for (previousDir in previousDirs) {
+            if (previousDir.absolutePath == configDir.absolutePath)
+                continue
             for (name in arrayOf("mpv.conf", "input.conf", "scripts", "script-opts", "shaders", "watch_later")) {
                 val oldFile = File(previousDir, name)
                 val newFile = File(configDir, name)
@@ -133,6 +126,7 @@ internal object Utils {
                 }
             }
         }
+        preferences.edit().remove("mpv_config_dir").apply()
         return configDir
     }
 

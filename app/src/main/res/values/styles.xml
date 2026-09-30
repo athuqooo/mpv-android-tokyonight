@@ -4,8 +4,8 @@
         <item name="nnf_separator_color">@color/neo_separator</item>
 
         <!-- Set these to match your theme -->
-        <item name="colorPrimary">@color/primary</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorPrimary">@color/neo_surface</item>
+        <item name="colorPrimaryDark">@color/neo_surface</item>
         <item name="colorAccent">@color/accent</item>
         <item name="colorControlHighlight">@color/neo_highlight</item>
         <item name="colorControlActivated">@color/neo_accent</item>
@@ -16,10 +16,6 @@
 
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerTheme.AlertDialog</item>
-        <item name="android:colorBackground">@color/neo_black</item>
-        <item name="android:windowBackground">@color/neo_black</item>
-        <item name="android:statusBarColor">@color/neo_black</item>
-        <item name="android:navigationBarColor">@color/neo_black</item>
         <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:textColorPrimary">@color/neo_text</item>
@@ -33,6 +29,8 @@
     </style>
 
     <style name="FilePickerTheme.Oled" parent="FilePickerThemeSpecial">
+        <item name="colorPrimary">@color/neo_black</item>
+        <item name="colorPrimaryDark">@color/neo_black</item>
         <item name="alertDialogTheme">@style/FilePickerTheme.Oled.AlertDialog</item>
         <item name="android:colorBackground">@color/neo_black</item>
         <item name="android:windowBackground">@color/neo_black</item>

@@ -14,7 +14,9 @@
     <RelativeLayout
         android:id="@+id/outside"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:clipChildren="false"
+        android:clipToPadding="false">
 
         <LinearLayout
             android:id="@+id/controls"
