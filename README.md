@@ -1,39 +1,42 @@
-# mpv for Android
+# mpv-android TokyoNight Fork
 
-[![Build Status](https://github.com/mpv-android/mpv-android/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/mpv-android/mpv-android/actions/workflows/build.yml)
+An unofficial, community-maintained fork of [mpv-android](https://github.com/mpv-android/mpv-android), the Android video player powered by [libmpv](https://github.com/mpv-player/mpv). This fork keeps the upstream project and its dependencies credited while developing a distinct interface and ARM64-focused builds.
 
-mpv-android is a video player for Android based on [libmpv](https://github.com/mpv-player/mpv).
+[简体中文](README.zh-CN.md)
 
-## Features
+## What this fork changes
 
-* Hardware and software video decoding
-* Gesture-based seeking, volume/brightness control and more
-* libass support for styled subtitles
-* Secondary (or dual) subtitle support
-* High-quality rendering with advanced settings (scalers, debanding, interpolation, ...)
-* Play network streams with the "Open URL" function
-* Background playback, Picture-in-Picture, keyboard input supported
+- A Neo OLED interface for the built-in file browser and playback controls, designed without additional image assets.
+- The built-in file manager is the single app-launch entry point. It requests the Android storage permissions it needs and offers settings and URL playback from its menu.
+- Native dependencies use `-O2` and ThinLTO where supported by their build systems.
+- GitHub Actions builds only `arm64-v8a` with ARMv8.2-A instructions and runs only when started manually.
 
-### Library?
+Playback controls and the existing settings remain based on upstream mpv-android. For the full upstream feature set, see the [upstream project](https://github.com/mpv-android/mpv-android).
 
-mpv-android is **not** a library/module (AAR) you can import into your app.
+## GitHub Actions build
 
-If you'd like to use libmpv in your app you can use our code as inspiration.
-The important parts are [`MPVLib`](app/src/main/java/is/xyz/mpv/MPVLib.kt), [`BaseMPVView`](app/src/main/java/is/xyz/mpv/BaseMPVView.kt) and the [native code](app/src/main/jni/).
-Native code is built by [these scripts](buildscripts/).
+Open **Actions**, select **build**, then choose **Run workflow**. Download the `mpv-android-arm64-v8a-debug` artifact when the run completes. The workflow does not run on pushes or pull requests.
 
-## Downloads
+The first run creates a JKS signing key, uses it to sign the APK, and uploads the key as the `mpv-android-signing-keystore` artifact. Download that artifact and add the file to this repository at `.github/keys/mpv-android.jks`; subsequent runs will use the same key. Keep a backup: losing or replacing it prevents future APKs from updating installations signed with the old key.
 
-You can download mpv-android from the [Releases section](https://github.com/mpv-android/mpv-android/releases) or
+This is an intentionally public signing key stored in a public repository. Anyone can use it to sign an APK that appears to come from this fork. Its password and alias are defined in the workflow and are not secrets. This setup provides signature consistency, not publisher authenticity or key confidentiality.
 
-[<img src="https://play.google.com/intl/en_us/badges/images/generic/en-play-badge.png" alt="Get it on Google Play" height="80">](https://play.google.com/store/apps/details?id=is.xyz.mpv)
+This build requires an ARMv8.2-A-capable device. Older ARM64 devices may not support the generated native libraries.
 
-[<img src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/is.xyz.mpv)
+## Build locally
 
-**Note**: Android TV is supported, but only available on F-Droid or by installing the APK manually.
+Native libraries must be built before the Android app. The build scripts support Linux and macOS; Windows and WSL are not supported by the upstream build scripts.
 
-## Building from source
+```sh
+cd buildscripts
+./download.sh
+./buildall.sh --arch arm64
+```
 
-Take a look at the [README](buildscripts/README.md) inside the `buildscripts` directory.
+The ARM64 debug APK is written to `app/build/outputs/apk/default/debug/app-default-arm64-v8a-debug.apk` from the repository root.
 
-Some other documentation can be found at this [link](http://mpv-android.github.io/mpv-android/).
+## Upstream and licensing
+
+This project is a fork, not an official mpv-android release. Upstream code and copyright notices are retained; changes in this repository are maintained separately. The root [`LICENSE`](LICENSE) and the original notices apply to the files and components they cover. Bundled libraries and Android dependencies retain their own licenses; see [`docs/licenses.html`](docs/licenses.html) for the upstream component list. The upstream project describes the combined application as GPL-3.0-or-later, depending on the selected build options.
+
+Please report issues specific to this fork in this repository.

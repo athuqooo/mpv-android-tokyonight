@@ -208,9 +208,10 @@
         </activity>
 
         <activity
-            android:name=".MainActivity"
+            android:name=".FilePickerActivity"
             android:configChanges="orientation|screenSize"
-            android:theme="@style/FilePickerTheme"
+            android:screenOrientation="behind"
+            android:theme="@style/FilePickerThemeSpecial"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -221,16 +222,9 @@
         </activity>
 
         <activity
-            android:name=".FilePickerActivity"
-            android:configChanges="orientation|screenSize"
-            android:screenOrientation="behind"
-            android:theme="@style/FilePickerThemeSpecial"
-            android:exported="false" />
-
-        <activity
             android:name=".preferences.PreferenceActivity"
             android:theme="@style/AppTheme.Preference"
-            android:parentActivityName=".MainActivity"
+            android:parentActivityName=".FilePickerActivity"
             android:launchMode="singleTop"
             android:label="@string/title_activity_settings" />
 

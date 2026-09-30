@@ -14,37 +14,30 @@ import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.addCallback
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Predicate
 import androidx.core.view.WindowCompat
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import `is`.xyz.filepicker.DocumentPickerFragment
 import `is`.xyz.filepicker.FilePickerFragment
-import `is`.xyz.mpv.databinding.FragmentFilepickerChoiceBinding
 import java.io.File
 import java.io.FileFilter
 
 class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFilePickedListener {
     private var fragment: MPVFilePickerFragment? = null
     private var fragment2: MPVDocumentPickerFragment? = null
+    private var homeMode = false
 
     private var lastSeenInsets: WindowInsets? = null
-
-    private var documentOpener = registerForActivityResult(ActivityResultContracts.OpenDocument()) {
-        it?.let { uri ->
-            finishWithResult(RESULT_OK, uri.toString())
-        }
-    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(null)
         Log.v(TAG, "FilePickerActivity: created")
+        homeMode = intent.getIntExtra("skip", -1) == -1
 
         setContentView(R.layout.activity_filepicker)
-        supportActionBar?.title = ""
+        supportActionBar?.title = getString(R.string.mpv_activity)
         supportActionBar?.hide()
 
         onBackPressedDispatcher.addCallback(this) {
@@ -75,17 +68,7 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
                 return
             }
         }
-
-        // Ask the user what he wants
-        val args = Bundle().apply {
-            putString("title", intent.getStringExtra("title"))
-            putBoolean("allow_document", intent.getBooleanExtra("allow_document", false))
-        }
-        with (supportFragmentManager.beginTransaction()) {
-            setReorderingAllowed(true)
-            add(R.id.fragment_container_view, ChoiceFragment::class.java, args, null)
-            commit()
-        }
+        initFilePicker()
     }
 
     private fun doUiTweaks() {
@@ -116,6 +99,8 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
         // document picker does not have a concept of storages
         if (fragment == null)
             menu.findItem(R.id.action_external_storage).isVisible = false
+        menu.findItem(R.id.action_request_access).isVisible =
+            fragment != null && !FilePickerFragment.hasPermission(this, File("/"))
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -169,6 +154,18 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
                     show()
                 }
                 saveFilterState(!old)
+                return true
+            }
+            R.id.action_request_access -> {
+                fragment?.goToDir(File("/"))
+                return true
+            }
+            R.id.action_open_url -> {
+                showUrlDialog()
+                return true
+            }
+            R.id.action_settings_home -> {
+                startActivity(Intent(this, PreferenceActivity::class.java))
                 return true
             }
             else -> return false
@@ -291,10 +288,14 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
         val helper = Utils.OpenUrlDialog(this)
         with (helper) {
             builder.setPositiveButton(R.string.dialog_ok) { _, _ ->
-                finishWithResult(RESULT_OK, helper.text)
+                if (homeMode)
+                    playFile(helper.text)
+                else
+                    finishWithResult(RESULT_OK, helper.text)
             }
             builder.setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.cancel() }
-            builder.setOnCancelListener { finishWithResult(RESULT_CANCELED) }
+            if (!homeMode)
+                builder.setOnCancelListener { finishWithResult(RESULT_CANCELED) }
             create().show()
         }
     }
@@ -335,14 +336,41 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
 
     // Listener methods
 
-    override fun onFilePicked(file: File) = finishWithResult(RESULT_OK, file.absolutePath)
+    override fun onFilePicked(file: File) {
+        if (homeMode)
+            playFile(file.absolutePath)
+        else
+            finishWithResult(RESULT_OK, file.absolutePath)
+    }
 
-    override fun onDirPicked(dir: File) = finishWithResult(RESULT_OK, dir.absolutePath)
+    override fun onDirPicked(dir: File) {
+        if (homeMode)
+            fragment?.goToDir(dir)
+        else
+            finishWithResult(RESULT_OK, dir.absolutePath)
+    }
 
     override fun onDocumentPicked(uri: Uri, isDir: Boolean) {
         assert(fragment2 != null)
-        if (!isDir)
-            finishWithResult(RESULT_OK, fragment2!!.pathToString(uri))
+        if (!isDir) {
+            val path = fragment2!!.pathToString(uri)
+            if (homeMode)
+                playFile(path)
+            else
+                finishWithResult(RESULT_OK, path)
+        }
+    }
+
+    private fun playFile(path: String) {
+        val playerIntent = if (path.startsWith("content://")) {
+            Intent(Intent.ACTION_VIEW, Uri.parse(path)).addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        } else {
+            Intent().putExtra("filepath", path)
+        }
+        playerIntent.setClass(this, MPVActivity::class.java)
+        startActivity(playerIntent)
+        if (!homeMode)
+            finish()
     }
 
     override fun onPermissionGranted() {
@@ -351,37 +379,9 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
         initFilePicker()
     }
 
-    override fun onCancelled() = finishWithResult(RESULT_CANCELED)
-
-    class ChoiceFragment : Fragment(R.layout.fragment_filepicker_choice) {
-        private lateinit var binding: FragmentFilepickerChoiceBinding
-
-        private fun removeMyself() {
-            with (requireActivity().supportFragmentManager.beginTransaction()) {
-                setReorderingAllowed(true)
-                remove(this@ChoiceFragment)
-                commit()
-            }
-        }
-
-        override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-            binding = FragmentFilepickerChoiceBinding.bind(view)
-
-            binding.message.text = requireArguments().getString("title")
-            binding.fileBtn.setOnClickListener {
-                removeMyself()
-                (activity as FilePickerActivity).initFilePicker()
-            }
-            binding.urlBtn.setOnClickListener {
-                // leave visible, dialog will exit anyway
-                (activity as FilePickerActivity).showUrlDialog()
-            }
-            binding.docBtn.setOnClickListener {
-                (activity as FilePickerActivity).documentOpener.launch(arrayOf("*/*"))
-            }
-            if (!requireArguments().getBoolean("allow_document", false))
-                binding.docBtn.visibility = View.GONE
-        }
+    override fun onCancelled() {
+        if (!homeMode)
+            finishWithResult(RESULT_CANCELED)
     }
 
     companion object {

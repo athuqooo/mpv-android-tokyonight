@@ -7,7 +7,7 @@ cleanbuild=0
 nodeps=0
 onlydeps=0
 target=mpv-android
-arch=armv7l
+arch=arm64
 
 getdeps () {
 	varname="dep_${1//-/_}[*]"
@@ -68,7 +68,11 @@ loadarch () {
 	export prefix_dir="$PWD/prefix/$prefix_name"
 	export CC=$cc_triple-clang
 	export CXX=$cc_triple-clang++
-	export LDFLAGS="-Wl,-O1,--icf=safe -Wl,-z,max-page-size=16384"
+	local optflags="-O2 -flto=thin"
+	[[ "$1" == "arm64" ]] && optflags+=" -march=armv8.2-a"
+	export CFLAGS="$optflags"
+	export CXXFLAGS="$optflags"
+	export LDFLAGS="-flto=thin -Wl,-O1,--icf=safe -Wl,-z,max-page-size=16384"
 	export AR=llvm-ar
 	export RANLIB=llvm-ranlib
 
@@ -97,6 +101,9 @@ setup_prefix () {
 	cat >"$prefix_dir/crossfile.tmp" <<CROSSFILE
 [built-in options]
 buildtype = 'release'
+optimization = '2'
+b_lto = true
+b_lto_mode = 'thin'
 default_library = 'static'
 wrap_mode = 'nodownload'
 prefix = '/usr/local'

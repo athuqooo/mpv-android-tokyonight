@@ -18,16 +18,15 @@
 
         <LinearLayout
             android:id="@+id/controls"
-            style="?buttonBarStyle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginLeft="24dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="60dp"
-            android:layout_marginRight="24dp"
-            android:layout_marginBottom="60dp"
-            android:background="#bf000000"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="24dp"
+            android:background="@drawable/player_control_panel"
             android:orientation="vertical">
 
             <LinearLayout
@@ -43,9 +42,12 @@
                     android:id="@+id/titleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/tint_normal"
-                    android:textSize="24sp"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingTop="12dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/neo_text"
+                    android:textSize="20sp"
                     android:visibility="gone"
                     tools:text="Song Title" />
 
@@ -53,8 +55,10 @@
                     android:id="@+id/minorTitleTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/tint_normal"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:textColor="@color/neo_muted"
                     android:textSize="14sp"
                     android:visibility="gone"
                     tools:text="Artist / Album" />
@@ -65,10 +69,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:ellipsize="middle"
-                    android:gravity="center"
+                    android:gravity="start|center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
                     android:singleLine="true"
-                    android:textColor="@color/tint_normal"
-                    android:textSize="16sp"
+                    android:textColor="@color/neo_text"
+                    android:textSize="14sp"
                     tools:text="Video Title" />
 
             </LinearLayout>
@@ -107,7 +113,9 @@
                     android:layout_gravity="center_vertical"
                     android:layout_weight="100"
                     android:minHeight="24dp"
-                    android:progressBackgroundTint="@color/tint_seekbar_bg" />
+                    android:progressBackgroundTint="@color/tint_seekbar_bg"
+                    android:progressTint="@color/neo_accent"
+                    android:thumbTint="@color/neo_text" />
 
                 <TextView
                     android:id="@+id/playbackDurationTxt"
@@ -157,10 +165,12 @@
                 <ImageButton
                     android:id="@+id/playBtn"
                     style="?buttonBarButtonStyle"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="52dp"
+                    android:layout_height="52dp"
+                    android:padding="12dp"
+                    android:background="@drawable/player_primary_control"
                     android:textColor="@android:color/white"
-                    app:tint="@color/tint_normal"
+                    app:tint="@color/neo_black"
                     tools:src="@drawable/ic_play_arrow_black_24dp" />
 
                 <Button
@@ -216,13 +226,13 @@
 
         <LinearLayout
             android:id="@+id/top_controls"
-            style="?buttonBarStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:layout_alignParentEnd="true"
-            android:alpha="0.5"
-            android:background="#bf000000"
+            android:layout_margin="12dp"
+            android:alpha="0.96"
+            android:background="@drawable/player_control_panel"
             android:orientation="horizontal">
 
             <ImageButton

@@ -23,12 +23,13 @@
         android:focusable="true"
         android:clipToPadding="false"
         android:fitsSystemWindows="true"
+        android:background="@color/neo_black"
         tools:listitem="@layout/nnf_filepicker_listitem_dir"/>
 
     <FrameLayout
         android:id="@+id/divider"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:background="?nnf_separator_color"/>
+        android:background="@color/neo_separator"/>
 
 </RelativeLayout>

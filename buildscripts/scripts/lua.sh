@@ -15,6 +15,8 @@ fi
 $0 clean
 
 mycflags=(
+	-O2
+	-flto=thin
 	# ensures correct linking into libmpv.so
 	-fPIC
 	# bionic is missing decimal_point in localeconv [src/llex.c]
@@ -22,6 +24,7 @@ mycflags=(
 	# force fallback as ftello/fseeko are not defined [src/liolib.c]
 	-Dlua_fseek
 )
+[[ "$ndk_triple" == "aarch64"* ]] && mycflags+=(-march=armv8.2-a)
 
 # LUA_T= and LUAC_T= to disable building lua & luac
 # -Dgetlocaledecpoint()=('.') fixes bionic missing decimal_point in localeconv

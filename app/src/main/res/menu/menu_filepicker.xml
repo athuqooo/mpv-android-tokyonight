@@ -12,4 +12,19 @@
         android:icon="@drawable/ic_filter_alt_24dp"
         app:showAsAction="ifRoom" />
 
+    <item android:id="@+id/action_request_access"
+        android:title="@string/action_request_access"
+        android:icon="@drawable/ic_folder_white_48dp"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_open_url"
+        android:title="@string/action_open_url"
+        android:icon="@drawable/ic_link_48dp"
+        app:showAsAction="never" />
+
+    <item android:id="@+id/action_settings_home"
+        android:title="@string/action_settings"
+        android:icon="@drawable/ic_settings_black_24dp"
+        app:showAsAction="ifRoom" />
+
 </menu>

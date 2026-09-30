@@ -3,6 +3,11 @@ apply plugin: 'com.android.application'
 ext.abiCodes = ["armeabi-v7a": 1, "arm64-v8a": 2, "x86":3, "x86_64":4]
 ext.universalBase = 8000
 
+def forkSigningKeystore = System.getenv('MPV_SIGNING_KEYSTORE')
+def forkSigningStorePassword = System.getenv('MPV_SIGNING_STORE_PASSWORD')
+def forkSigningKeyAlias = System.getenv('MPV_SIGNING_KEY_ALIAS')
+def forkSigningKeyPassword = System.getenv('MPV_SIGNING_KEY_PASSWORD')
+
 android {
     namespace 'is.xyz.mpv'
     compileSdk = 36
@@ -41,7 +46,22 @@ android {
         buildConfig = true
     }
 
+    signingConfigs {
+        if (forkSigningKeystore) {
+            create("fork") {
+                storeFile file(forkSigningKeystore)
+                storePassword forkSigningStorePassword
+                keyAlias forkSigningKeyAlias
+                keyPassword forkSigningKeyPassword
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            if (forkSigningKeystore)
+                signingConfig signingConfigs.getByName("fork")
+        }
         release {
             minifyEnabled = true
             shrinkResources = true

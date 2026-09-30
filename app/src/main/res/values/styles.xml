@@ -1,17 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="FilePickerTheme" parent="Theme.AppCompat">
-        <item name="nnf_separator_color">@color/primary</item>
+        <item name="nnf_separator_color">@color/neo_separator</item>
 
         <!-- Set these to match your theme -->
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="colorControlHighlight">@color/neo_highlight</item>
+        <item name="colorControlActivated">@color/neo_accent</item>
 
         <!-- Need to set this also to style create folder dialog -->
         <item name="alertDialogTheme">@style/FilePickerTheme.AlertDialog</item>
-        <item name="android:textColorPrimary">@android:color/background_light</item>
-        <item name="android:textColorLink">@android:color/background_light</item>
+        <item name="android:colorBackground">@color/neo_black</item>
+        <item name="android:windowBackground">@color/neo_black</item>
+        <item name="android:statusBarColor">@color/neo_black</item>
+        <item name="android:navigationBarColor">@color/neo_black</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:textColorPrimary">@color/neo_text</item>
+        <item name="android:textColorSecondary">@color/neo_muted</item>
+        <item name="android:textColorLink">@color/neo_accent</item>
     </style>
 
     <style name="FilePickerThemeSpecial" parent="FilePickerTheme">
@@ -26,12 +35,17 @@
 
     <!-- theme for player UI -->
     <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="colorPrimary">@color/neo_black</item>
+        <item name="colorPrimaryDark">@color/neo_black</item>
+        <item name="colorAccent">@color/neo_accent</item>
+        <item name="colorControlHighlight">@color/neo_highlight</item>
+        <item name="colorControlActivated">@color/neo_accent</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowLayoutInDisplayCutoutMode">shortEdges</item>
-        <item name="android:windowBackground">#000000</item>
+        <item name="android:windowBackground">@color/neo_black</item>
     </style>
 
     <!-- theme for preferences -->

@@ -66,8 +66,9 @@ include $(PREBUILT_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE    := libplayer
-LOCAL_CFLAGS    := -Werror
-LOCAL_CPPFLAGS  += -std=c++11
+LOCAL_CFLAGS    := -Werror -O2 -flto=thin -march=armv8.2-a
+LOCAL_CPPFLAGS  += -std=c++11 -O2 -flto=thin -march=armv8.2-a
+LOCAL_LDFLAGS   += -flto=thin
 LOCAL_SRC_FILES := \
 	main.cpp \
 	render.cpp \

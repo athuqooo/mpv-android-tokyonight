@@ -5,7 +5,7 @@ cd "$( dirname "${BASH_SOURCE[0]}" )/.."
 
 . ./include/depinfo.sh
 
-v_ci_archs="armv7l arm64"
+v_ci_archs="arm64"
 
 msg() {
 	printf '==> %s\n' "$1"
