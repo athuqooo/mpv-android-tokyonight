@@ -102,8 +102,7 @@ setup_prefix () {
 [built-in options]
 buildtype = 'release'
 optimization = '2'
-b_lto = true
-b_lto_mode = 'thin'
+b_lto = false
 default_library = 'static'
 wrap_mode = 'nodownload'
 prefix = '/usr/local'
