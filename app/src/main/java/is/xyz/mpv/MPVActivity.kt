@@ -57,7 +57,7 @@ import kotlin.math.roundToInt
 typealias ActivityResultCallback = (Int, Intent?) -> Unit
 typealias StateRestoreCallback = () -> Unit
 
-class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObserver {
+class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, MPVLib.LogObserver, TouchGesturesObserver {
     // for calls to eventUi() and eventPropertyUi()
     private val eventUiHandler = Handler(Looper.getMainLooper())
     // for use with fadeRunnable1..3
@@ -177,7 +177,6 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
     private var controlsAtBottom = true
     private var showMediaTitle = false
     private var useTimeRemaining = false
-    private var bottomSystemInset = 0
 
     private var rememberBrightness = false
     private var lastScreenBrightness = -1
@@ -228,16 +227,15 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             val insets = windowInsets.getInsets(
                 WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout()
             )
-            bottomSystemInset = insets.bottom
             v.updateLayoutParams<MarginLayoutParams> {
                 // avoid system bars and cutout
                 leftMargin = insets.left
                 topMargin = insets.top
-                bottomMargin = insets.bottom
+                bottomMargin = if (controlsAtBottom) 0 else insets.bottom
                 rightMargin = insets.right
             }
             binding.controls.updateLayoutParams<MarginLayoutParams> {
-                bottomMargin = if (controlsAtBottom) -bottomSystemInset
+                bottomMargin = if (controlsAtBottom) 0
                 else Utils.convertDp(this@MPVActivity, 60f)
             }
             WindowInsetsCompat.CONSUMED
@@ -311,7 +309,15 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         }
 
         player.addObserver(this)
+        if (BuildConfig.DEBUG) {
+            MPVLib.addLogObserver(this)
+            Log.i(TAG, "mpv config-dir=${configDir.absolutePath}")
+        }
         player.initialize(configDir.path, cacheDir.path)
+        if (BuildConfig.DEBUG) {
+            Log.i(TAG, "mpv glsl-shaders=${MPVLib.getPropertyString("options/glsl-shaders")}")
+            Log.i(TAG, "mpv vo=${MPVLib.getPropertyString("options/vo")}")
+        }
         player.playFile(filepath)
 
         mediaSession = initMediaSession()
@@ -380,8 +386,23 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
         stopServiceRunnable.run()
 
         player.removeObserver(this)
+        MPVLib.removeLogObserver(this)
         player.destroy()
         super.onDestroy()
+    }
+
+    override fun logMessage(prefix: String, level: Int, text: String) {
+        if (!BuildConfig.DEBUG ||
+            (!prefix.contains("gpu", ignoreCase = true) && !text.contains("shader", ignoreCase = true)))
+            return
+
+        val androidLevel = when {
+            level <= MPVLib.MpvLogLevel.MPV_LOG_LEVEL_ERROR -> Log.ERROR
+            level <= MPVLib.MpvLogLevel.MPV_LOG_LEVEL_WARN -> Log.WARN
+            level <= MPVLib.MpvLogLevel.MPV_LOG_LEVEL_INFO -> Log.INFO
+            else -> Log.DEBUG
+        }
+        Log.println(androidLevel, TAG, "[$prefix] ${text.trimEnd()}")
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -1014,7 +1035,7 @@ class MPVActivity : AppCompatActivity(), MPVLib.EventObserver, TouchGesturesObse
             bottomMargin = if (!controlsAtBottom) {
                 Utils.convertDp(this@MPVActivity, 60f)
             } else {
-                -bottomSystemInset
+                0
             }
             leftMargin = if (!controlsAtBottom) {
                 Utils.convertDp(this@MPVActivity, if (isLandscape) 60f else 24f)
