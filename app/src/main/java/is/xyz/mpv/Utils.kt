@@ -186,10 +186,22 @@ internal object Utils {
                     val documentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, childId)
                     val input = context.contentResolver.openInputStream(documentUri)
                         ?: throw IOException("Failed to open shader document $name")
-                    input.use { source ->
-                        File(destination, name).outputStream().use { output ->
-                            source.copyTo(output)
+                    val target = File(destination, name)
+                    val temporary = File.createTempFile(".shader-import-", ".tmp", destination)
+                    try {
+                        input.use { source ->
+                            temporary.outputStream().use { output ->
+                                source.copyTo(output)
+                            }
                         }
+                        if (target.exists() && !target.delete())
+                            throw IOException("Failed to replace shader file $target")
+                        if (!temporary.renameTo(target)) {
+                            temporary.copyTo(target, overwrite = true)
+                            temporary.delete()
+                        }
+                    } finally {
+                        temporary.delete()
                     }
                     imported++
                 }

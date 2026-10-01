@@ -14,6 +14,7 @@ import android.view.*
 import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.activity.addCallback
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.util.Predicate
@@ -32,6 +33,42 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
     private var oledThemeApplied = false
 
     private var lastSeenInsets: WindowInsets? = null
+    private val storageTreePicker = registerForActivityResult(
+        ActivityResultContracts.OpenDocumentTree()
+    ) { treeUri ->
+        if (treeUri == null) {
+            finishWithResult(RESULT_CANCELED)
+            return@registerForActivityResult
+        }
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val previousTree = preferences.getString(SAF_TREE_URI, null)?.let(Uri::parse)
+        try {
+            contentResolver.takePersistableUriPermission(
+                treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+            )
+        } catch (e: SecurityException) {
+            Toast.makeText(this, R.string.nnf_permission_external_write_denied, Toast.LENGTH_LONG).show()
+            finishWithResult(RESULT_CANCELED)
+            return@registerForActivityResult
+        }
+
+        preferences.edit().putString(SAF_TREE_URI, treeUri.toString()).apply()
+        if (previousTree != null && previousTree != treeUri) {
+            try {
+                contentResolver.releasePersistableUriPermission(
+                    previousTree, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                )
+            } catch (_: SecurityException) {
+            }
+        }
+
+        fragment2?.let {
+            supportFragmentManager.beginTransaction().remove(it).commitNow()
+            fragment2 = null
+        }
+        initDocPicker(treeUri)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         oledThemeApplied = Utils.isOledTheme(this)
@@ -106,9 +143,10 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
 
     private fun inflateOptionsMenu(menu: Menu) {
         menuInflater.inflate(R.menu.menu_filepicker, menu)
-        // document picker does not have a concept of storages
-        if (fragment == null)
-            menu.findItem(R.id.action_external_storage).isVisible = false
+        val storageAction = menu.findItem(R.id.action_external_storage)
+        storageAction.isVisible = fragment != null || fragment2 != null
+        if (fragment2 != null)
+            storageAction.title = getString(R.string.action_choose_folder)
         menu.findItem(R.id.action_request_access).isVisible =
             fragment != null && !FilePickerFragment.hasPermission(this, File("/"))
     }
@@ -128,6 +166,10 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_external_storage -> {
+                if (fragment2 != null) {
+                    storageTreePicker.launch(fragment2!!.root)
+                    return true
+                }
                 if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
                     val path = Environment.getExternalStorageDirectory()
                     fragment!!.goToDir(path) // attempt to do something useful
@@ -183,6 +225,18 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
     }
 
     private fun initFilePicker() {
+        supportActionBar?.show()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && BuildConfig.FLAVOR != "allstorage") {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+            val storedTree = preferences.getString(SAF_TREE_URI, null)?.let(Uri::parse)
+            if (storedTree != null && DocumentPickerFragment.isTreeUsable(this, storedTree)) {
+                initDocPicker(storedTree)
+                return
+            }
+            storageTreePicker.launch(storedTree)
+            return
+        }
+
         // Create fragment first
         if (fragment == null) {
             fragment = MPVFilePickerFragment()
@@ -193,8 +247,6 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
                 commit()
             }
         }
-        supportActionBar?.show()
-
         if (!FilePickerFragment.hasPermission(this, File("/"))) {
             Log.v(TAG, "FilePickerActivity: waiting for file picker permission")
             return
@@ -276,7 +328,7 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
         supportActionBar?.show()
 
         val defaultPathStr = intent.getStringExtra("default_path")
-        if (!defaultPathStr.isNullOrEmpty()) {
+        if (!defaultPathStr.isNullOrEmpty() && defaultPathStr.startsWith("content://")) {
             fragment2!!.apply {
                 goToDir(pathFromString(defaultPathStr))
             }
@@ -420,5 +472,6 @@ class FilePickerActivity : AppCompatActivity(), AbstractFilePickerFragment.OnFil
         const val URL_DIALOG = 0
         const val FILE_PICKER = 1
         const val DOC_PICKER = 2
+        private const val SAF_TREE_URI = "file_picker_tree_uri"
     }
 }
