@@ -17,9 +17,9 @@
 
 ## 使用 GitHub Actions 构建
 
-进入 **Actions**，选择 **build**，再点击 **Run workflow**。工作流完成后下载 `mpv-android-arm64-v8a-debug` artifact。push 和 pull request 不会自动触发构建。
+进入 **Actions**，选择 **build**，再点击 **Run workflow**。工作流完成后下载 `mpv-android-arm64-v8a-release` artifact。push 和 pull request 不会自动触发构建。
 
-第一次运行会生成一把 JKS 签名密钥，用它签名 APK，并将密钥作为 `mpv-android-signing-keystore` artifact 上传。下载该 artifact 后，把文件加入仓库的 `.github/keys/mpv-android.jks` 路径；后续运行便会使用同一把密钥。请妥善备份，密钥丢失或替换后，旧密钥签名的安装包将无法通过更新安装。
+Release APK 使用 fork keystore 签名。第一次运行会生成一把 JKS 密钥，并将其作为 `mpv-android-signing-keystore` artifact 上传。下载该 artifact 后，把文件加入仓库的 `.github/keys/mpv-android.jks` 路径；后续运行便会使用同一把密钥。请妥善备份，密钥丢失或替换后，旧密钥签名的安装包将无法通过更新安装。
 
 这是有意存放在公开仓库中的公开签名密钥。任何人都能使用它签出看似来自本 fork 的 APK。密码和 alias 定义在 workflow 中，并非秘密。此方案只保证签名一致，不提供发布者身份验证或密钥保密性。
 

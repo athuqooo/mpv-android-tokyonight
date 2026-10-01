@@ -63,6 +63,8 @@ android {
                 signingConfig signingConfigs.getByName("fork")
         }
         release {
+            if (forkSigningKeystore)
+                signingConfig signingConfigs.getByName("fork")
             minifyEnabled = true
             shrinkResources = true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'

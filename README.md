@@ -17,9 +17,9 @@ Playback controls and the existing settings remain based on upstream mpv-android
 
 ## GitHub Actions build
 
-Open **Actions**, select **build**, then choose **Run workflow**. Download the `mpv-android-arm64-v8a-debug` artifact when the run completes. The workflow does not run on pushes or pull requests.
+Open **Actions**, select **build**, then choose **Run workflow**. Download the `mpv-android-arm64-v8a-release` artifact when the run completes. The workflow does not run on pushes or pull requests.
 
-The first run creates a JKS signing key, uses it to sign the APK, and uploads the key as the `mpv-android-signing-keystore` artifact. Download that artifact and add the file to this repository at `.github/keys/mpv-android.jks`; subsequent runs will use the same key. Keep a backup: losing or replacing it prevents future APKs from updating installations signed with the old key.
+The release APK is signed with the fork keystore. The first run creates a JKS signing key and uploads it as the `mpv-android-signing-keystore` artifact. Download that artifact and add the file to this repository at `.github/keys/mpv-android.jks`; subsequent runs will use the same key. Keep a backup: losing or replacing it prevents future APKs from updating installations signed with the old key.
 
 This is an intentionally public signing key stored in a public repository. Anyone can use it to sign an APK that appears to come from this fork. Its password and alias are defined in the workflow and are not secrets. This setup provides signature consistency, not publisher authenticity or key confidentiality.
 

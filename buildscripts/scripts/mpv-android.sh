@@ -47,7 +47,9 @@ printf '%s\n' \
 	"ndkVersion=$v_ndk_n" "ndkRoot=$ANDROID_NDK_ROOT" >ndk.properties
 
 
-if [ -n "$DONT_BUILD_RELEASE" ]; then
+if [ -n "$DONT_BUILD_DEBUG" ]; then
+	./gradlew assembleRelease
+elif [ -n "$DONT_BUILD_RELEASE" ]; then
 	./gradlew assembleDebug
 else
 	./gradlew assembleDebug assembleRelease
