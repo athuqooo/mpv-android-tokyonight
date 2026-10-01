@@ -15,7 +15,7 @@ public class MPVFilePickerFragment extends FilePickerFragment {
     private File rootPath = new File("/");
 
     MPVFilePickerFragment() {
-        USE_ALL_FILE_ACCESS = BuildConfig.FLAVOR.equals("allstorage");
+        USE_ALL_FILE_ACCESS = true;
     }
 
     @Override
