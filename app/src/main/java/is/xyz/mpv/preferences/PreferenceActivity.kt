@@ -4,9 +4,11 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.widget.Toast
 import android.view.MenuItem
 import android.widget.FrameLayout
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
@@ -17,6 +19,7 @@ import androidx.preference.PreferenceManager
 import com.google.android.material.color.DynamicColors
 import `is`.xyz.mpv.R
 import `is`.xyz.mpv.Utils
+import java.io.IOException
 
 class PreferenceActivity : AppCompatActivity(),
     PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
@@ -158,8 +161,57 @@ class PreferenceActivity : AppCompatActivity(),
     }
 
     class AdvancePreference : PreferenceFragmentCompat() {
+        private val shaderFolderPicker = registerForActivityResult(
+            ActivityResultContracts.OpenDocumentTree()
+        ) { treeUri ->
+            if (treeUri == null) return@registerForActivityResult
+
+            val appContext = requireContext().applicationContext
+            val hostActivity = activity ?: return@registerForActivityResult
+            val resolver = appContext.contentResolver
+            try {
+                resolver.takePersistableUriPermission(treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } catch (e: SecurityException) {
+                Toast.makeText(appContext, R.string.pref_import_shaders_failed, Toast.LENGTH_LONG).show()
+                return@registerForActivityResult
+            }
+
+            Toast.makeText(appContext, R.string.pref_import_shaders_started, Toast.LENGTH_SHORT).show()
+            Thread {
+                val result = try {
+                    Utils.importShaders(appContext, treeUri)
+                } catch (e: IOException) {
+                    -1
+                } catch (e: SecurityException) {
+                    -1
+                } finally {
+                    try {
+                        resolver.releasePersistableUriPermission(
+                            treeUri, Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        )
+                    } catch (_: SecurityException) {
+                    }
+                }
+
+                hostActivity.runOnUiThread {
+                    val message = when {
+                        result < 0 -> R.string.pref_import_shaders_failed
+                        result == 0 -> R.string.pref_import_shaders_empty
+                        else -> R.string.pref_import_shaders_done
+                    }
+                    val text = if (result > 0) appContext.getString(message, result)
+                    else appContext.getString(message)
+                    Toast.makeText(appContext, text, Toast.LENGTH_LONG).show()
+                }
+            }.start()
+        }
+
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             setPreferencesFromResource(R.xml.pref_advanced, rootKey)
+            findPreference<Preference>("import_shaders")?.setOnPreferenceClickListener {
+                shaderFolderPicker.launch(null)
+                true
+            }
         }
     }
 }

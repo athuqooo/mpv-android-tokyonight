@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Configuration
+import android.database.Cursor
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -13,6 +14,7 @@ import android.os.Parcelable
 import android.os.storage.StorageManager
 import android.provider.Settings
 import android.preference.PreferenceManager
+import android.provider.DocumentsContract
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
@@ -128,6 +130,73 @@ internal object Utils {
         }
         preferences.edit().remove("mpv_config_dir").apply()
         return configDir
+    }
+
+    @Throws(IOException::class, SecurityException::class)
+    fun importShaders(context: Context, treeUri: Uri): Int {
+        val destination = File(configDir(context), "shaders")
+        if (!destination.exists() && !destination.mkdirs())
+            throw IOException("Failed to create shader directory $destination")
+
+        return copyShaderDocuments(
+            context,
+            treeUri,
+            DocumentsContract.getTreeDocumentId(treeUri),
+            destination
+        )
+    }
+
+    private fun copyShaderDocuments(
+        context: Context,
+        treeUri: Uri,
+        documentId: String,
+        destination: File
+    ): Int {
+        if (!destination.exists() && !destination.mkdirs())
+            throw IOException("Failed to create shader directory $destination")
+
+        val childrenUri = DocumentsContract.buildChildDocumentsUriUsingTree(treeUri, documentId)
+        val columns = arrayOf(
+            DocumentsContract.Document.COLUMN_DOCUMENT_ID,
+            DocumentsContract.Document.COLUMN_DISPLAY_NAME,
+            DocumentsContract.Document.COLUMN_MIME_TYPE
+        )
+        val cursor = context.contentResolver.query(childrenUri, columns, null, null, null)
+            ?: throw IOException("Failed to read shader folder")
+        var imported = 0
+
+        cursor.use {
+            val idIndex = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DOCUMENT_ID)
+            val nameIndex = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_DISPLAY_NAME)
+            val mimeIndex = it.getColumnIndexOrThrow(DocumentsContract.Document.COLUMN_MIME_TYPE)
+            while (it.moveToNext()) {
+                val name = it.getString(nameIndex) ?: continue
+                if (name.isBlank() || name == "." || name == ".." ||
+                    name.contains('/') || name.contains('\\'))
+                    continue
+
+                val childId = it.getString(idIndex) ?: continue
+                val mimeType = it.getString(mimeIndex)
+                if (mimeType == DocumentsContract.Document.MIME_TYPE_DIR) {
+                    imported += copyShaderDocuments(
+                        context, treeUri, childId, File(destination, name)
+                    )
+                } else if (name.endsWith(".glsl", ignoreCase = true) ||
+                    name.endsWith(".hook", ignoreCase = true)) {
+                    val documentUri = DocumentsContract.buildDocumentUriUsingTree(treeUri, childId)
+                    val input = context.contentResolver.openInputStream(documentUri)
+                        ?: throw IOException("Failed to open shader document $name")
+                    input.use { source ->
+                        File(destination, name).outputStream().use { output ->
+                            source.copyTo(output)
+                        }
+                    }
+                    imported++
+                }
+            }
+        }
+
+        return imported
     }
 
     fun copyAssets(context: Context, configDir: File) {

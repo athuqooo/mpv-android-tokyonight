@@ -201,6 +201,12 @@
 
     <string name="pref_edit_mpv_conf">Edit mpv.conf</string>
     <string name="pref_edit_mpv_conf_message">You can directly edit mpv\'s configuration here.</string>
+    <string name="pref_import_shaders">Import GPU shaders</string>
+    <string name="pref_import_shaders_summary">Choose a folder containing .glsl or .hook files. Import copies them into the app\'s mpv configuration folder.</string>
+    <string name="pref_import_shaders_started">Importing shaders...</string>
+    <string name="pref_import_shaders_done">Imported %1$d shader files. Reference them from mpv.conf as ~~/shaders/FILE.glsl.</string>
+    <string name="pref_import_shaders_empty">No .glsl or .hook files were found in that folder.</string>
+    <string name="pref_import_shaders_failed">Could not import shaders from that folder.</string>
 
     <string name="pref_edit_input_conf">Edit input.conf</string>
     <string name="pref_edit_input_conf_message">You can edit input.conf here, this is mainly useful for TV remotes and keyboards.\n\nImportant: mpv-android has some hardcoded keys which can\'t be redefined here, e.g. \'j\' to cycle subtitles.</string>
