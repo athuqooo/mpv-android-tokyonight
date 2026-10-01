@@ -21,7 +21,9 @@ Open **Actions**, select **build**, then choose **Run workflow**. Download the `
 
 The release APK is signed with the fork keystore. The first run creates a JKS signing key and uploads it as the `mpv-android-signing-keystore` artifact. Download that artifact and add the file to this repository at `.github/keys/mpv-android.jks`; subsequent runs will use the same key. Keep a backup: losing or replacing it prevents future APKs from updating installations signed with the old key.
 
-This is an intentionally public signing key stored in a public repository. Anyone can use it to sign an APK that appears to come from this fork. Its password and alias are defined in the workflow and are not secrets. This setup provides signature consistency, not publisher authenticity or key confidentiality.
+Once committed to this public repository, the keystore and its private key are public. Anyone can use them to sign an APK that appears to come from this fork. Its password and alias are defined in the workflow and are not secrets. This setup provides signature consistency, not publisher authenticity or key confidentiality.
+
+This key is only for keeping this fork's release APK signatures consistent so they can be reinstalled or updated; it is not an official publishing or developer-identity key.
 
 This build requires an ARMv8.2-A-capable device. Older ARM64 devices may not support the generated native libraries.
 

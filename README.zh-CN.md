@@ -21,7 +21,9 @@
 
 Release APK 使用 fork keystore 签名。第一次运行会生成一把 JKS 密钥，并将其作为 `mpv-android-signing-keystore` artifact 上传。下载该 artifact 后，把文件加入仓库的 `.github/keys/mpv-android.jks` 路径；后续运行便会使用同一把密钥。请妥善备份，密钥丢失或替换后，旧密钥签名的安装包将无法通过更新安装。
 
-这是有意存放在公开仓库中的公开签名密钥。任何人都能使用它签出看似来自本 fork 的 APK。密码和 alias 定义在 workflow 中，并非秘密。此方案只保证签名一致，不提供发布者身份验证或密钥保密性。
+将密钥库提交到公开仓库后，其中的私钥也会公开；任何人都能使用它签出看似来自本 fork 的 APK。密码和 alias 定义在 workflow 中，并非秘密。此方案只保证签名一致，不提供发布者身份验证或密钥保密性。
+
+该密钥仅用于保持本 fork 的 Release APK 签名一致，方便重复安装或覆盖更新；它不是官方发布密钥，也不用于验证开发者身份。
 
 该构建要求设备支持 ARMv8.2-A。较旧的 ARM64 设备可能不支持生成的 native 库。
 
